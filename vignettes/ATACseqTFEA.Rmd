@@ -1,0 +1,105 @@
+---
+title: "ATACseqTFEA Guide"
+author: "Jianhong Ou"
+bibliography: bibliography.bib
+csl: nature.csl
+vignette: >
+  %\VignetteIndexEntry{ATACseqTFEA Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output: html_document
+---
+
+```{r, echo=FALSE, results="hide", warning=FALSE, message=FALSE}
+suppressPackageStartupMessages({
+  library(ATACseqTFEA)
+  library(BSgenome.Drerio.UCSC.danRer10)
+  library(Rsamtools)
+})
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, fig.width=5, fig.height=3.5)
+```
+
+#Introduction
+
+ATAC-seq, an assay for Transposase-Accessible Chromatin using sequencing, is a
+widely used technique for chromatin accessibility analysis. 
+Detecting differential activation of transcription factors between two 
+different experiment conditions provides the possibility of decoding the 
+key factors in a phenotype. Lots of tools have been developed to detect 
+differential activity of TFs (DATFs) for different groups of samples. 
+Those tools can be divided into two groups. One group detects DATFs from 
+differential accessibility analysis, such as MEME, HOMER, enrichr and ChEA.
+Another group find the DATFs by enrichment test, such as BiFET, diffTF and TFEA.
+For single-cell ATAC-seq analysis, Signac and chromVar are widely used tools.
+
+All of these tools detect the DATF by only considering the open status of 
+chromatin. None of them take the TF footprint into acount. The open status 
+provide the possiblity of TF can bind to that position. 
+The TF footprint by ATAC-seq show the status of TF bindings. 
+
+To help researchers quickly assess the differential activity of hundreds of TFs
+by detect the difference in TF footprint, 
+we have developed the _ATACseqTFEA_ package. 
+The _ATACseqTFEA_ package is a robust and reliable computational tool to
+identifie the key regulators responding to a phenotype. 
+
+
+# Quick start
+
+Here is an example using _ATACseqTFEA_ with a subset of ribo-seq data.
+
+First install _ATACseqTFEA_ and other packages required to run 
+the examples.
+Please note that the example dataset used here is from zebrafish. 
+To run analysis with dataset from a different species or different assembly, 
+please install the corresponding Bsgenome and TxDb.
+For example, to analyze mouse data aligned to mm10, 
+please install BSgenome.Mmusculus.UCSC.mm10, 
+and TxDb.Mmusculus.UCSC.mm10.knownGene. 
+You can also generate a TxDb object by 
+functions `makeTxDbFromGFF` from a local gff file,
+or `makeTxDbFromUCSC`, `makeTxDbFromBiomart`, and `makeTxDbFromEnsembl`, 
+from online resources in _GenomicFeatures_ package.
+
+```{r, eval=FALSE}
+library(BiocManager)
+BiocManager::install(c("ATACseqTFEA", 
+                       "Rsamtools",
+                       "BSgenome.Drerio.UCSC.danRer10"))
+```
+
+
+```{r}
+## load library
+library(ATACseqTFEA)
+motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
+                               package="ATACseqTFEA"))
+library(BSgenome.Drerio.UCSC.danRer10)
+seqlev <- paste0("chr", 1:25)
+mts <- prepareBindingSites(motifs, Drerio, seqlev)
+```
+## Load genome
+
+In this manual, we will use the fish genome.
+
+```{r}
+library(BSgenome.Drerio.UCSC.danRer10)
+## set genome, Drerio is a shortname for BSgenome.Drerio.UCSC.danRer10
+genome <- Drerio
+```
+
+If your assembly is Human hg38 please load the human library,
+
+```{r, eval=FALSE}
+library(BSgenome.Hsapiens.UCSC.hg38)
+genome <- Hsapiens
+```
+
+If your assembly is Mouse mm10 please load the mouse library,
+
+```{r, eval=FALSE}
+library(BSgenome.Mmusculus.UCSC.mm10)
+genome <- Mmusculus
+```
+
+# References
