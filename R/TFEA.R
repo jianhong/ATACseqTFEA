@@ -137,7 +137,7 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
     counts$dis.gap <- NULL
     stopifnot(all(counts$dis>=0))
     stopifnot(all(counts$pro>=0))
-    rownames(counts) <- names(binding)
+    #rownames(counts) <- names(binding)
     counts ## data frame with colnames bs, pro and dis
   }
   counts <- mapply(function(a, b) {
@@ -170,13 +170,13 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
   openscore <-
     do.call(cbind, lapply(norm.counts, function(.ele)
       log2(.ele[, "pro"]+1) - log2(.ele[, "dis"]+1)))
-  rownames(openscore) <- names(bindingSites)
+  #rownames(openscore) <- names(bindingSites)
 
   ## binding score = proximal/binding
   bindingscore <-
     do.call(cbind, lapply(norm.counts, function(.ele)
       log2(.ele[, "pro"]+1) - log2(.ele[, "bs"]+1)))
-  rownames(bindingscore) <- names(bindingSites)
+  #rownames(bindingscore) <- names(bindingSites)
 
   ## weight = openscore>0?p:0
   openscoreZ <- apply(openscore, 2, function(.ele){
