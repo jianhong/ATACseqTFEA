@@ -22,6 +22,7 @@
 #' @importFrom motifmatchr matchMotifs
 #' @importFrom IRanges IRanges
 #' @importFrom S4Vectors queryHits subjectHits
+#' @importFrom BiocGenerics `%in%`
 #' @export
 #' @author Jianhong Ou
 #' @examples

@@ -69,7 +69,7 @@ BiocManager::install(c("ATACseqTFEA",
 ```
 
 
-```{r}
+```{r eval=FALSE}
 ## load library
 library(ATACseqTFEA)
 motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",

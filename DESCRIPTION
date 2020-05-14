@@ -1,7 +1,7 @@
 Package: ATACseqTFEA
 Type: Package
 Title: Transcription Factor Enrichment Analysis for ATAC-seq
-Version: 0.1.1
+Version: 0.1.2
 Author: Jianhong Ou <jianhong.ou@duke.edu>
 Authors@R: person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
         role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488"))
@@ -16,7 +16,7 @@ Description: Assay for Transpose-Accessible Chromatin using sequencing (ATAC-seq
     TFs footprints.ATACseqTFEA provides an easy, rigorous way to broadly asess
     TF activity changes between two conditions.
 Depends: R (>= 4.0), Matrix, GenomicRanges
-Imports: BSgenome, S4Vectors, IRanges,
+Imports: BiocGenerics, BSgenome, S4Vectors, IRanges,
     GenomicAlignments, GenomeInfoDb,
     Rsamtools, motifmatchr,
     stats, pracma, grDevices, 
