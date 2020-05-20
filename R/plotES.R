@@ -20,8 +20,8 @@ plotES <- function(TFEAresults, TF, outfolder=".",
               is(TFEAresults, "TFEAresults"))
   ES <- t(TFEAresults@enrichmentScore)
   ESplot <- function(ES, i, xlab, ylab){
-    dat <- data.frame(cbind(x=seq.int(nrow(ES)), ES))
-    p <- ggplot(dat, aes_string(x="x", y=i)) +
+    dat <- data.frame(cbind(x=seq.int(nrow(ES)), y=ES[, i]))
+    p <- ggplot(dat, aes_string(x="x", y="y")) +
       geom_line() +
       geom_rug(data=subset(dat, dat$x %in% TFEAresults@motifID[[i]]),
                sides = "b", position = "jitter") +

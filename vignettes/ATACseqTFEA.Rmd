@@ -77,6 +77,16 @@ motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
 library(BSgenome.Drerio.UCSC.danRer10)
 seqlev <- paste0("chr", 1:25)
 mts <- prepareBindingSites(motifs, Drerio, seqlev)
+saveRDS(mts, "mts.rds")
+bamExp <- file.path("bam", paste0("bowtie2.danRer10.sp7po4dpa.rep", seq.int(2), 
+                                  ".markDup.bam"))
+bamCtl <- file.path("bam", paste0("bowtie2.danRer10.sp7po0dpa.rep", seq.int(2), 
+                                  ".markDup.bam"))
+res <- TFEA(bamExp, bamCtl, bindingSites=mts)
+saveRDS(res, "res.rds")
+dir.create("ESplots")
+g <- plotES(res, outfolder="ESplots")
+ESvolcanoplot(TFEAresults=res)
 ```
 ## Load genome
 
