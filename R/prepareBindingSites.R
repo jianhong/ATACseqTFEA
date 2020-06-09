@@ -6,7 +6,7 @@
 #' \code{\link[TFBSTools]{PWMatrixList}}
 #' @param genome \code{\link[BSgenome:BSgenome-class]{BSgenome}} object.
 #' @param seqlev A character vector. Sequence levels to be searched.
-#' @param p.cutoff p-value cutoff for returning motifs; default is 5e-05
+#' @param p.cutoff p-value cutoff for returning motifs; default is 1e-05
 #' @param w parameter controlling size of window for filtration; default is 7
 #' @param grange GRanges for motif search. If it is set, function will only
 #' search the binding site within the grange.
@@ -35,7 +35,7 @@
 #'                            grange=GRanges("chr1",
 #'                                           IRanges(5000, 100000)))
 prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
-                                p.cutoff = 5e-05, w = 7, grange,
+                                p.cutoff = 1e-05, w = 7, grange,
                                 maximalBindingWidth = 40L,
                                 mergeBindingSitesByPercentage = 0.8){
   stopifnot("genome must be a BSgenome object."=is(genome, "BSgenome"))
@@ -55,7 +55,7 @@ prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
                            genome = genome, out = "positions",
                            p.cutoff = p.cutoff, w = w)
   mts.unlist <- unlist(motif_pos, use.names = FALSE)
-  mts.unlist$score <- NULL
+  #mts.unlist$score <- NULL
   mts.unlist$motif <- rep(names(motif_pos), lengths(motif_pos))
   seqlev <- intersect(seqlevels(mts.unlist), seqlev)
   mts.unlist <- mts.unlist[seqnames(mts.unlist) %in% seqlev]
@@ -95,6 +95,7 @@ prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
     q2 <- reduce(GRangesList(q2))
     q2 <- unlist(q2)
     q2$motif <- split(query$motif[li$subjectHits], li$queryHits)[names(q2)]
+    q2$score <- split(query$score[li$subjectHits], li$queryHits)[names(q2)]
 
     c(query[-unique(c(queryHits(ol), subjectHits(ol)))], q2)
   }

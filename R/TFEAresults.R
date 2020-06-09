@@ -28,7 +28,7 @@ setClass("TFEAresults",
          ),
          prototype = prototype(
            enrichmentScore=matrix(),
-           bindingSites=GRanges(motif=CharacterList()),
+           bindingSites=GRanges(motif=CharacterList(), score=list()),
            motifID=list(),
            resultsTable=data.frame(TF=character(),
                                    enrichmentScore=numeric(),
@@ -80,7 +80,8 @@ setMethod("show", "TFEAresults", function(object){
 #' @name as
 #' @family TFEAresults
 #' @rdname TFEAresults-class
-#'
+#' @aliases coerce,TFEAresults,data.frame-method
+#' @exportMethod coerce
 setAs(from="TFEAresults", to="data.frame", function(from){
   from@resultsTable
 })

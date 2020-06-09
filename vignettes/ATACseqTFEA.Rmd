@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
   library(ATACseqTFEA)
   library(BSgenome.Drerio.UCSC.danRer10)
   library(Rsamtools)
+  library(ATACseqQC)
 })
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, fig.width=5, fig.height=3.5)
 ```
@@ -28,8 +29,10 @@ different experiment conditions provides the possibility of decoding the
 key factors in a phenotype. Lots of tools have been developed to detect 
 differential activity of TFs (DATFs) for different groups of samples. 
 Those tools can be divided into two groups. One group detects DATFs from 
-differential accessibility analysis, such as MEME, HOMER, enrichr and ChEA.
-Another group find the DATFs by enrichment test, such as BiFET, diffTF and TFEA.
+differential accessibility analysis, such as MEME[@bailey2006meme],
+HOMER[@heinz2010simple], enrichr[@chen2013enrichr] and ChEA[@lachmann2010chea].
+Another group find the DATFs by enrichment test, such as BiFET[@youn2019bifet],
+diffTF[@berest2019quantification] and TFEA[@rubin2020transcription].
 For single-cell ATAC-seq analysis, Signac and chromVar are widely used tools.
 
 All of these tools detect the DATF by only considering the open status of 
@@ -46,7 +49,7 @@ identifie the key regulators responding to a phenotype.
 
 # Quick start
 
-Here is an example using _ATACseqTFEA_ with a subset of ribo-seq data.
+Here is an example using _ATACseqTFEA_ with a subset of ATAC-seq data.
 
 First install _ATACseqTFEA_ and other packages required to run 
 the examples.
@@ -65,9 +68,99 @@ from online resources in _GenomicFeatures_ package.
 library(BiocManager)
 BiocManager::install(c("ATACseqTFEA", 
                        "Rsamtools",
-                       "BSgenome.Drerio.UCSC.danRer10"))
+                       "BSgenome.Drerio.UCSC.danRer10",
+                       "TxDb.Drerio.UCSC.danRer10.refGene"))
 ```
 
+## load library
+
+```{r}
+library(ATACseqTFEA)
+library(BSgenome.Drerio.UCSC.danRer10) ## for binding sites search
+library(ATACseqQC) ## for footprint
+```
+
+## prepare binding sites
+
+To do TFEA, there are two inputs, the binding sites and the change ranks.
+To get the binding sites, ATACseqTFEA package provide `prepareBindingSites` 
+function. Users can also try to get the binding sites list by other tools
+such as fimo[@grant2011fimo].
+
+The `prepareBindingSites` function request a cluster of position weight matrix 
+(PWM) of TF motifs. _ATACseqTFEA_ prepared a merged `PWMatrixList` for 
+405 motifs. The `PWMatrixList` is a collection of jasper2018, jolma2013 and
+cisbp_1.02 from package motifDB (v 1.28.0) and merged by distance smaller than
+1e-9 calculated by MotIV::motifDistances function (v 1.42.0). 
+The merged motifs were exported by motifStack (v 1.30.0).
+
+```{r}
+motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
+                               package="ATACseqTFEA"))
+```
+
+To scan the binding sites along a genome, an `BSgenome` object is required by
+the `prepareBindingSites` function.
+
+```{r}
+# for test run, we use a subset of data within chr1:5000-100000
+# Drerio is the short-link of BSgenome.Drerio.UCSC.danRer10
+seqlev <- "chr1" 
+bindingSites <- 
+  prepareBindingSites(motifs, Drerio, seqlev,
+                      grange=GRanges("chr1", IRanges(5000, 100000)),
+                      p.cutoff = 5e-05)#set higher p.cutoff to get more sites.
+```
+
+
+## do TFEA
+
+The shifted bam files by ATACseqQC::shiftGAlignmentsList[@ou2018atacseqqc] 
+(for paired end) or  shiftGAlignments (for single end) of 
+experiment and control group are required for change ranks, 
+which is required by TFEA. The samples must be at
+least biological duplicated.
+
+```{r}
+bamExp <- system.file("extdata",
+                      c("KD.shift.rep1.bam",
+                        "KD.shift.rep2.bam"),
+                      package="ATACseqTFEA")
+bamCtl <- system.file("extdata",
+                      c("WT.shift.rep1.bam",
+                        "WT.shift.rep2.bam"),
+                      package="ATACseqTFEA")
+res <- TFEA(bamExp, bamCtl, bindingSites=bindingSites)
+```
+
+## view results
+
+
+```{r}
+## volcanoplot
+ESvolcanoplot(TFEAresults=res)
+### plot enrichment score for one TF
+TF <- "Myog"
+print(plotES(res, TF=TF, outfolder=NA))
+## footprint
+bs <- bindingSites[sapply(bindingSites$motif, 
+                          function(.ele) TF %in% .ele)]
+bs$score <- mapply(bs$score, bs$motif, FUN = function(score, motif){
+  score[motif==TF]
+})
+sigs <- factorFootprints(c(bamCtl, bamExp), 
+                         pfm = motifs[[TF]]@profileMatrix,
+                         bindingSites = bs,
+                         seqlev = seqlev, genome = Drerio,
+                         upstream = 100, downstream = 100,
+                         group = rep(c("WT", "KD"), each=2))
+## export the results into a csv file
+write.csv(res$resultsTable, "enrichment.csv", 
+          row.names=FALSE)
+```
+
+
+# Real data
 
 ```{r eval=FALSE}
 ## load library
@@ -75,41 +168,55 @@ library(ATACseqTFEA)
 motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
                                package="ATACseqTFEA"))
 library(BSgenome.Drerio.UCSC.danRer10)
+library(TxDb.Drerio.UCSC.danRer10.refGene)
+genes <- genes(TxDb.Drerio.UCSC.danRer10.refGene)
+## only search the ranges within 50K around annotated genes.
 seqlev <- paste0("chr", 1:25)
-mts <- prepareBindingSites(motifs, Drerio, seqlev)
+genes <- genes[seqnames(genes) %in% seqlev]
+start(genes) <- start(genes) - 50000
+end(genes) <- end(genes) + 50000
+genes <- GenomicRanges::trim(genes)
+mts <- prepareBindingSites(motifs, Drerio, seqlev, 
+                           grange=genes, 
+                           p.cutoff = 1e-05) #set low p.cutoff to get less sites
 saveRDS(mts, "mts.rds")
+#mts <- readRDS("mts.rds")
 bamExp <- file.path("bam", paste0("bowtie2.danRer10.sp7po4dpa.rep", seq.int(2), 
                                   ".markDup.bam"))
 bamCtl <- file.path("bam", paste0("bowtie2.danRer10.sp7po0dpa.rep", seq.int(2), 
                                   ".markDup.bam"))
 res <- TFEA(bamExp, bamCtl, bindingSites=mts)
 saveRDS(res, "res.rds")
+## get all the enrichment score plots
 dir.create("ESplots")
 g <- plotES(res, outfolder="ESplots")
+## volcanoplot
+pdf("volcanoplot.pdf")
 ESvolcanoplot(TFEAresults=res)
-```
-## Load genome
+dev.off()
+## plot the footprint
+library(ATACseqQC)
+outfolder <- "footprint"
+dir.create(outfolder)
+for(TF in res$resultsTable$TF[res$resultsTable$adjPval<0.05]){
+  bs <- bindingSites[sapply(bindingSites$motif, 
+                          function(.ele) TF %in% .ele)]
+  bs$score <- mapply(bs$score, bs$motif, FUN = function(score, motif){
+    score[motif==TF]
+    })
+  pdf(file.path(outfolder, paste(TF, ".pdf")))
+  factorFootprints(c(bamCtl, bamExp), 
+                   pfm = motifs[[TF]]@profileMatrix,
+                   bindingSites = bs,
+                   seqlev = seqlev, genome = Drerio,
+                   upstream = 100, downstream = 100,
+                   group = rep(c("WT", "KD"), each=2))
+  dev.off()
+}
 
-In this manual, we will use the fish genome.
-
-```{r}
-library(BSgenome.Drerio.UCSC.danRer10)
-## set genome, Drerio is a shortname for BSgenome.Drerio.UCSC.danRer10
-genome <- Drerio
-```
-
-If your assembly is Human hg38 please load the human library,
-
-```{r, eval=FALSE}
-library(BSgenome.Hsapiens.UCSC.hg38)
-genome <- Hsapiens
-```
-
-If your assembly is Mouse mm10 please load the mouse library,
-
-```{r, eval=FALSE}
-library(BSgenome.Mmusculus.UCSC.mm10)
-genome <- Mmusculus
+## export the results into a csv file
+write.csv(res$resultsTable, "enrichment.csv", 
+          row.names=FALSE)
 ```
 
 # References

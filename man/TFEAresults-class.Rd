@@ -6,6 +6,7 @@
 \alias{TFEAresults}
 \alias{show,TFEAresults-method}
 \alias{as}
+\alias{coerce,TFEAresults,data.frame-method}
 \alias{$,TFEAresults-method}
 \alias{$<-,TFEAresults-method}
 \alias{[[,TFEAresults,ANY,ANY-method}

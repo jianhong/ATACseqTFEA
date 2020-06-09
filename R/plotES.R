@@ -4,29 +4,39 @@
 #' @param TF A character vector. The transcription factor names.
 #' @param outfolder character(1). Output file path.
 #' @param xlab,ylab character string giving label for x-axis/y-axis.
+#' @param resolution integer(1). The number of bars plotted in the bottom of
+#' figure to show the density of occurence of events.
 #' @param ... parameter passed to pdf.
 #' @return NULL if outfolder is set or ggplot object.
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_rug xlab ylab
-#' theme_classic geom_hline
+#' theme_classic geom_hline ggtitle
+#' @importFrom dplyr sample_n
 #' @importFrom grDevices dev.off pdf
 #' @export
 #' @examples
 #' res <- system.file("extdata", "res.rds", package="ATACseqTFEA")
 #' res <- readRDS(res)
 #' g <- plotES(res, TF="KLF9", outfolder=NA)
+#' print(g)
 plotES <- function(TFEAresults, TF, outfolder=".",
-                   xlab="rank", ylab="Enrichment", ...){
+                   xlab="rank", ylab="Enrichment",
+                   resolution=500L, ...){
   stopifnot("TFEAresults must be output of TFEA function"=
               is(TFEAresults, "TFEAresults"))
   ES <- t(TFEAresults@enrichmentScore)
-  ESplot <- function(ES, i, xlab, ylab){
+  ESplot <- function(ES, i, xlab, ylab, resolution){
     dat <- data.frame(cbind(x=seq.int(nrow(ES)), y=ES[, i]))
     p <- ggplot(dat, aes_string(x="x", y="y")) +
       geom_line() +
-      geom_rug(data=subset(dat, dat$x %in% TFEAresults@motifID[[i]]),
+      geom_rug(data=
+                 sample_n(subset(dat, dat$x %in%
+                                   TFEAresults@motifID[[i]]),
+                          size=min(resolution,
+                                   nrow(subset(dat, dat$x %in%
+                                                 TFEAresults@motifID[[i]])))),
                sides = "b", position = "jitter") +
       xlab(xlab) + ylab(ylab) + theme_classic() +
-      geom_hline(yintercept = 0)
+      geom_hline(yintercept = 0) + ggtitle(i)
   }
   if(missing(TF)){
     if(!is.na(outfolder)&&!is.null(outfolder)){
@@ -35,7 +45,7 @@ plotES <- function(TFEAresults, TF, outfolder=".",
       }
       for(i in colnames(ES)){
         pdf(file.path(outfolder, paste0(make.names(i), ".pdf")), ...)
-        ESplot(ES, i, xlab, ylab)
+        print(ESplot(ES, i, xlab, ylab, resolution))
         dev.off()
       }
     }else{
@@ -49,7 +59,7 @@ plotES <- function(TFEAresults, TF, outfolder=".",
       for(i in TF){
         if(i %in% colnames(ES)){
           pdf(file.path(outfolder, paste0(make.names(i), ".pdf")), ...)
-          ESplot(ES, i, xlab, ylab)
+          print(ESplot(ES, i, xlab, ylab, resolution))
           dev.off()
         }else{
           warning(i, "is not a valid TF name.")
@@ -59,7 +69,7 @@ plotES <- function(TFEAresults, TF, outfolder=".",
       if(length(TF)==1){
         i <- TF
         if(i %in% colnames(ES)){
-          ESplot(ES, i, xlab, ylab)
+          ESplot(ES, i, xlab, ylab, resolution)
         }else{
           warning(i, "is not a valid TF name.")
         }

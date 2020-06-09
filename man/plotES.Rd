@@ -10,6 +10,7 @@ plotES(
   outfolder = ".",
   xlab = "rank",
   ylab = "Enrichment",
+  resolution = 500L,
   ...
 )
 }
@@ -21,6 +22,9 @@ plotES(
 \item{outfolder}{character(1). Output file path.}
 
 \item{xlab, ylab}{character string giving label for x-axis/y-axis.}
+
+\item{resolution}{integer(1). The number of bars plotted in the bottom of
+figure to show the density of occurence of events.}
 
 \item{...}{parameter passed to pdf.}
 }
@@ -34,4 +38,5 @@ Plot GSEA style enrichment score curve.
 res <- system.file("extdata", "res.rds", package="ATACseqTFEA")
 res <- readRDS(res)
 g <- plotES(res, TF="KLF9", outfolder=NA)
+print(g)
 }

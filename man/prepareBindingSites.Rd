@@ -8,7 +8,7 @@ prepareBindingSites(
   pwms,
   genome,
   seqlev = seqlevels(genome),
-  p.cutoff = 5e-05,
+  p.cutoff = 1e-05,
   w = 7,
   grange,
   maximalBindingWidth = 40L,
@@ -24,7 +24,7 @@ prepareBindingSites(
 
 \item{seqlev}{A character vector. Sequence levels to be searched.}
 
-\item{p.cutoff}{p-value cutoff for returning motifs; default is 5e-05}
+\item{p.cutoff}{p-value cutoff for returning motifs; default is 1e-05}
 
 \item{w}{parameter controlling size of window for filtration; default is 7}
 
