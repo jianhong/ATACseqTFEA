@@ -9,7 +9,8 @@
 #' @param p.cutoff p-value cutoff for returning motifs; default is 1e-05
 #' @param w parameter controlling size of window for filtration; default is 7
 #' @param grange GRanges for motif search. If it is set, function will only
-#' search the binding site within the grange.
+#' search the binding site within the grange. Usually a peaklist should be
+#' supplied.
 #' @param maximalBindingWidth A numeric vector(length=1).
 #' Maximal binding site width. Default is 40.
 #' @param mergeBindingSitesByPercentage A numeric vector (length=1).

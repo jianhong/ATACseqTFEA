@@ -104,6 +104,7 @@ the `prepareBindingSites` function.
 
 ```{r}
 # for test run, we use a subset of data within chr1:5000-100000
+# for real data, use the merged peaklist as grange input.
 # Drerio is the short-link of BSgenome.Drerio.UCSC.danRer10
 seqlev <- "chr1" 
 bindingSites <- 
@@ -170,23 +171,25 @@ motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
 library(BSgenome.Drerio.UCSC.danRer10)
 library(TxDb.Drerio.UCSC.danRer10.refGene)
 genes <- genes(TxDb.Drerio.UCSC.danRer10.refGene)
-## only search the ranges within 50K around annotated genes.
+## only search the ranges for peaks.
 seqlev <- paste0("chr", 1:25)
-genes <- genes[seqnames(genes) %in% seqlev]
-start(genes) <- start(genes) - 50000
-end(genes) <- end(genes) + 50000
-genes <- GenomicRanges::trim(genes)
+peaks <- sapply(pfs, import, format="narrowPeak")
+peaks <- reduce(unlist(GRangesList(peaks)))
 mts <- prepareBindingSites(motifs, Drerio, seqlev, 
-                           grange=genes, 
-                           p.cutoff = 1e-05) #set low p.cutoff to get less sites
-saveRDS(mts, "mts.rds")
+                           grange=peaks, 
+                           p.cutoff = 5e-05)
+saveRDS(res, "res.rds")
 #mts <- readRDS("mts.rds")
 bamExp <- file.path("bam", paste0("bowtie2.danRer10.sp7po4dpa.rep", seq.int(2), 
                                   ".markDup.bam"))
 bamCtl <- file.path("bam", paste0("bowtie2.danRer10.sp7po0dpa.rep", seq.int(2), 
                                   ".markDup.bam"))
-res <- TFEA(bamExp, bamCtl, bindingSites=mts)
+res <- TFEA(bamExp, bamCtl, bindingSites=mts,
+            openscoreZcutoff=0,
+            bindingScoreLog2FCcutoff=0,
+            bindingScorePvalCutoff=1)
 saveRDS(res, "res.rds")
+#res <- readRDS("res.rds")
 ## get all the enrichment score plots
 dir.create("ESplots")
 g <- plotES(res, outfolder="ESplots")
@@ -199,11 +202,11 @@ library(ATACseqQC)
 outfolder <- "footprint"
 dir.create(outfolder)
 for(TF in res$resultsTable$TF[res$resultsTable$adjPval<0.05]){
-  bs <- bindingSites[sapply(bindingSites$motif, 
-                          function(.ele) TF %in% .ele)]
-  bs$score <- mapply(bs$score, bs$motif, FUN = function(score, motif){
-    score[motif==TF]
-    })
+  bs <- mts[sapply(mts$motif, 
+                   function(.ele) TF %in% .ele)]
+  bs$score <- unlist(mapply(bs$score, bs$motif, FUN = function(score, motif){
+    score[motif==TF][1]
+    }))
   pdf(file.path(outfolder, paste(TF, ".pdf")))
   factorFootprints(c(bamCtl, bamExp), 
                    pfm = motifs[[TF]]@profileMatrix,

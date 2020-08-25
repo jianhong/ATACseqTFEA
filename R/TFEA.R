@@ -18,11 +18,11 @@
 #'        of the binding region for aggregate ATAC-seq footprint.
 #' @param gap numeric(1) or integer(1). basepair for gaps among binding sites,
 #'            proximal, and distal. default is 10L.
-#' @param openscoreZcutoff Open score Z value cutoff value. Default is 0.125.
+#' @param openscoreZcutoff Open score Z value cutoff value. Default is 0.
 #'   Open score is calculated by the count ratio of
 #'   proximal site and distal site.
 #' @param bindingScorePvalCutoff,bindingScoreLog2FCcutoff Binding score cutoff
-#'   values. Default is 0.1. Binding score is calculated by the count ratio of
+#'   values. Default is 1 and 0. Binding score is calculated by the count ratio of
 #'   proximal site and binding site. The cutoff values are used to decrease
 #'   the total number of binding site for ranking. Increasing the log2FCcutoff
 #'   value and decreasing the P-value cutoff value can greatly decrease the
@@ -56,9 +56,9 @@
 TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
                  bindingSites,
                  proximal=40L, distal=proximal, gap=10L,
-                 openscoreZcutoff=0.125,
-                 bindingScoreLog2FCcutoff=0.1,
-                 bindingScorePvalCutoff=0.1){
+                 openscoreZcutoff=0,
+                 bindingScoreLog2FCcutoff=0,
+                 bindingScorePvalCutoff=1){
   stopifnot("bindingSites must be an GRanges object"=
               is(bindingSites, "GRanges"))
   stopifnot("bindingSites must contain mcols 'motif'"=
@@ -213,8 +213,11 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
   ## and pvalue greater than bindingScorePvalCutoff
   ## otherwise dataset is too large
   bindingSites <-
-    bindingSites[bindingSites$P.Value<=bindingScoreLog2FCcutoff &
+    bindingSites[bindingSites$P.Value<=bindingScorePvalCutoff &
                    abs(bindingSites$logFC)>=bindingScoreLog2FCcutoff]
+  stopifnot(
+    "bindingScorePvalCutoff & bindingScoreLog2FCcutoff is too stringency."=
+      length(bindingSites)>0)
   bindingSites <- bindingSites[order(bindingSites$t, decreasing = TRUE)]
   ## Calculate enrichment
   ## walk down the list L,
