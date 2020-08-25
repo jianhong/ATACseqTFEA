@@ -13,9 +13,9 @@ TFEA(
   proximal = 40L,
   distal = proximal,
   gap = 10L,
-  openscoreZcutoff = 0.125,
-  bindingScoreLog2FCcutoff = 0.1,
-  bindingScorePvalCutoff = 0.1
+  openscoreZcutoff = 0,
+  bindingScoreLog2FCcutoff = 0,
+  bindingScorePvalCutoff = 1
 )
 }
 \arguments{
@@ -42,12 +42,12 @@ of the binding region for aggregate ATAC-seq footprint.}
 \item{gap}{numeric(1) or integer(1). basepair for gaps among binding sites,
 proximal, and distal. default is 10L.}
 
-\item{openscoreZcutoff}{Open score Z value cutoff value. Default is 0.125.
+\item{openscoreZcutoff}{Open score Z value cutoff value. Default is 0.
 Open score is calculated by the count ratio of
 proximal site and distal site.}
 
 \item{bindingScorePvalCutoff, bindingScoreLog2FCcutoff}{Binding score cutoff
-values. Default is 0.1. Binding score is calculated by the count ratio of
+values. Default is 1 and 0. Binding score is calculated by the count ratio of
 proximal site and binding site. The cutoff values are used to decrease
 the total number of binding site for ranking. Increasing the log2FCcutoff
 value and decreasing the P-value cutoff value can greatly decrease the

@@ -29,7 +29,8 @@ prepareBindingSites(
 \item{w}{parameter controlling size of window for filtration; default is 7}
 
 \item{grange}{GRanges for motif search. If it is set, function will only
-search the binding site within the grange.}
+search the binding site within the grange. Usually a peaklist should be
+supplied.}
 
 \item{maximalBindingWidth}{A numeric vector(length=1).
 Maximal binding site width. Default is 40.}
