@@ -7,7 +7,12 @@ vignette: >
   %\VignetteIndexEntry{ATACseqTFEA Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-output: html_document
+output:
+  html_document:
+    theme: simplex
+    toc: true
+    toc_float: true
+    toc_depth: 4
 ---
 
 ```{r, echo=FALSE, results="hide", warning=FALSE, message=FALSE}
@@ -101,7 +106,7 @@ motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
                                package="ATACseqTFEA"))
 ```
 
-An other full list of non-redundant TF motifs are also available by downloading
+Another full list of non-redundant TF motifs are also available by downloading
 the data from [DeepSTARR](https://github.com/bernardo-de-almeida/motif-clustering)[@de2021deepstarr]. There are 6502 motifs in the data set.
 ```{r}
 fullListMotifs <- readRDS(system.file("extdata", "cluster_PWMs.rds",
