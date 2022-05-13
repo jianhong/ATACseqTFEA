@@ -24,7 +24,7 @@ ESvolcanoplot <- function(TFEAresults,
                         ...){
   stopifnot("TFEAresults must be output of TFEA function"=
               is(TFEAresults, "TFEAresults"))
-  res <- TFEAresults@resultsTable
+  res <- as(TFEAresults, "data.frame")
   res$qvalue <- -log10(res$p_value)
   res <- res[!is.na(res$enrichmentScore), , drop=FALSE]
   res <- res[!is.na(res$qvalue), , drop=FALSE]

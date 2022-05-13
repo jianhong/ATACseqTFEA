@@ -63,7 +63,6 @@ prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
                            genome = genome, out = "positions",
                            p.cutoff = p.cutoff, w = w)
   mts.unlist <- unlist(motif_pos, use.names = FALSE)
-  #mts.unlist$score <- NULL
   mts.unlist$motif <- rep(names(motif_pos), lengths(motif_pos))
   seqlev <- intersect(seqlevels(mts.unlist), seqlev)
   mts.unlist <- mts.unlist[seqnames(mts.unlist) %in% seqlev]
@@ -108,12 +107,8 @@ prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
     c(query[-unique(c(queryHits(ol), subjectHits(ol)))], q2)
   }
   mts.unlist <- split(mts.unlist, seqnames(mts.unlist)) ## memory
-  mts.reduce <- list()
-  for(i in seq_along(mts.unlist)){
-    mts.reduce[[i]] <-
-      reduceByPercentage(mts.unlist[[i]],
-                         percentage = mergeBindingSitesByPercentage)
-  }
+  mts.reduce <- lapply(mts.unlist, reduceByPercentage,
+                       percentage = mergeBindingSitesByPercentage)
   rm(mts.unlist)
   mts.reduce <- mts.reduce[lengths(mts.reduce)>0]
   mts.reduce <- unlist(GRangesList(mts.reduce))
@@ -123,9 +118,5 @@ prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
     mts.reduce <- mts.reduce[width(mts.reduce)<=maximalBindingWidth]
   }
 
-#  names(mts.reduce) <-
-#    paste0("p", formatC(seq.int(length(mts.reduce)),
-#                          width = nchar(as.character(length(mts.reduce))),
-#                          flag = "0"))
   return(mts.reduce)
 }

@@ -11,6 +11,12 @@
 \alias{$<-,TFEAresults-method}
 \alias{[[,TFEAresults,ANY,ANY-method}
 \alias{[[<-,TFEAresults,ANY,ANY-method}
+\alias{getEnrichmentScore}
+\alias{getEnrichmentScore,TFEAresults-method}
+\alias{getBindingSites}
+\alias{getBindingSites,TFEAresults-method}
+\alias{getMotifID}
+\alias{getMotifID,TFEAresults-method}
 \title{Class \code{"TFEAresults"}}
 \usage{
 \S4method{show}{TFEAresults}(object)
@@ -24,6 +30,18 @@ TFEAresults(...)
 \S4method{[[}{TFEAresults,ANY,ANY}(x, i, j, ..., exact = TRUE)
 
 \S4method{[[}{TFEAresults,ANY,ANY}(x, i, j, ...) <- value
+
+getEnrichmentScore(x)
+
+\S4method{getEnrichmentScore}{TFEAresults}(x)
+
+getBindingSites(x)
+
+\S4method{getBindingSites}{TFEAresults}(x)
+
+getMotifID(x)
+
+\S4method{getMotifID}{TFEAresults}(x)
 }
 \arguments{
 \item{object}{an object of trackStyle}

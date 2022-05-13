@@ -76,7 +76,7 @@ setMethod("show", "TFEAresults", function(object){
   show(head(object@resultsTable))
 })
 
-#' As("TFEAresults", "data.frame")
+#' as("TFEAresults", "data.frame")
 #' @name as
 #' @family TFEAresults
 #' @rdname TFEAresults-class
@@ -96,13 +96,13 @@ TFEAresults <- function(...){
 }
 
 #' @rdname TFEAresults-class
-#' @exportMethod `$`
+#' @export
 #' @param x TFEAresults object.
 setMethod("$", "TFEAresults", function(x, name) slot(x, name))
 #' @rdname TFEAresults-class
 #' @param name A literal character string or a name (possibly backtick quoted).
 #' @param value value to replace.
-#' @exportMethod `$<-`
+#' @export
 setReplaceMethod("$", "TFEAresults",
                  function(x, name, value){
                    slot(x, name, check = TRUE) <- value
@@ -111,14 +111,41 @@ setReplaceMethod("$", "TFEAresults",
 
 
 #' @rdname TFEAresults-class
-#' @exportMethod `[[`
+#' @export
 #' @param i,j indices specifying elements to extract or replace.
 #' @param exact see \link[base]{Extract}
 setMethod("[[", "TFEAresults", function(x, i, j, ..., exact=TRUE) slot(x, i))
 #' @rdname TFEAresults-class
-#' @exportMethod `[[<-`
+#' @export
 setReplaceMethod("[[", "TFEAresults",
                  function(x, i, ..., value){
                    slot(x, i, check = TRUE) <- value
                    x
                  })
+
+
+#' @rdname TFEAresults-class
+#' @export
+#' @aliases getEnrichmentScore
+setGeneric("getEnrichmentScore", function(x) standardGeneric("getEnrichmentScore"))
+#' @rdname TFEAresults-class
+#' @export
+#' @aliases getEnrichmentScore,TFEAresults-method
+setMethod("getEnrichmentScore", "TFEAresults", function(x) slot(x, "enrichmentScore"))
+#' @rdname TFEAresults-class
+#' @export
+#' @aliases getBindingSites
+setGeneric("getBindingSites", function(x) standardGeneric("getBindingSites"))
+#' @rdname TFEAresults-class
+#' @export
+#' @aliases getBindingSites,TFEAresults-method
+setMethod("getBindingSites", "TFEAresults", function(x) slot(x, "bindingSites"))
+#' @rdname TFEAresults-class
+#' @export
+#' @aliases getMotifID
+setGeneric("getMotifID", function(x) standardGeneric("getMotifID"))
+#' @rdname TFEAresults-class
+#' @export
+#' @aliases getMotifID,TFEAresults-method
+setMethod("getMotifID", "TFEAresults", function(x) slot(x, "motifID"))
+

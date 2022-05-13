@@ -105,6 +105,7 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
     stopifnot(all(distance(pro, dis)==0))
     bamfile <- BamFile(bam, index=index, yieldSize=chunk, asMates = FALSE)
     open(bamfile)
+    on.exit(close(bamfile))
     counts <- data.frame(bs=rep(0, length(binding)),
                          pro.gap=rep(0, length(pro.gap)),
                          pro=rep(0, length(pro)),
@@ -131,6 +132,7 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
                                     dis=so.dis)
     }
     close(bamfile)
+    on.exit()
     counts$dis <- counts$dis - counts$dis.gap
     counts$pro <- counts$pro - counts$pro.gap
     counts$pro.gap <- NULL
@@ -170,15 +172,13 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
   openscore <-
     do.call(cbind, lapply(norm.counts, function(.ele)
       log2(.ele[, "pro"]+1) - log2(.ele[, "dis"]+1)))
-  #rownames(openscore) <- names(bindingSites)
 
   ## binding score = proximal/binding
   bindingscore <-
     do.call(cbind, lapply(norm.counts, function(.ele)
       log2(.ele[, "pro"]+1) - log2(.ele[, "bs"]+1)))
-  #rownames(bindingscore) <- names(bindingSites)
 
-  ## weight = openscore>0?p:0
+  ## weight = openscore>0?1-p:0
   openscoreZ <- apply(openscore, 2, function(.ele){
     mu <- mean(.ele, na.rm = TRUE)
     std <- sd(.ele, na.rm = TRUE)

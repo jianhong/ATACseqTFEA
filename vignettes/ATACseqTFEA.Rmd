@@ -58,6 +58,7 @@ identifie the key regulators responding to a phenotype.
 
 Here is an example using _ATACseqTFEA_ with a subset of ATAC-seq data.
 
+## Installation
 First install _ATACseqTFEA_ and other packages required to run 
 the examples.
 Please note that the example dataset used here is from zebrafish. 

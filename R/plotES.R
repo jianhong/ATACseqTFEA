@@ -23,17 +23,17 @@ plotES <- function(TFEAresults, TF, outfolder=".",
                    resolution=500L, ...){
   stopifnot("TFEAresults must be output of TFEA function"=
               is(TFEAresults, "TFEAresults"))
-  ES <- t(TFEAresults@enrichmentScore)
+  ES <- t(getEnrichmentScore(TFEAresults))
   ESplot <- function(ES, i, xlab, ylab, resolution){
     dat <- data.frame(cbind(x=seq.int(nrow(ES)), y=ES[, i]))
     p <- ggplot(dat, aes_string(x="x", y="y")) +
       geom_line() +
       geom_rug(data=
                  sample_n(subset(dat, dat$x %in%
-                                   TFEAresults@motifID[[i]]),
+                                   getMotifID(TFEAresults)[[i]]),
                           size=min(resolution,
                                    nrow(subset(dat, dat$x %in%
-                                                 TFEAresults@motifID[[i]])))),
+                                                 getMotifID(TFEAresults)[[i]])))),
                sides = "b", position = "jitter") +
       xlab(xlab) + ylab(ylab) + theme_classic() +
       geom_hline(yintercept = 0) + ggtitle(i)
@@ -43,11 +43,11 @@ plotES <- function(TFEAresults, TF, outfolder=".",
       if(!file.exists(outfolder)){
         dir.create(outfolder)
       }
-      for(i in colnames(ES)){
+      null <- lapply(colnames(ES), function(i){
         pdf(file.path(outfolder, paste0(make.names(i), ".pdf")), ...)
         print(ESplot(ES, i, xlab, ylab, resolution))
         dev.off()
-      }
+      })
     }else{
       stop("outfolder can not be NA if TF is not set.")
     }
@@ -56,7 +56,7 @@ plotES <- function(TFEAresults, TF, outfolder=".",
       if(!file.exists(outfolder)){
         dir.create(outfolder)
       }
-      for(i in TF){
+      null <- lapply(TF, function(i){
         if(i %in% colnames(ES)){
           pdf(file.path(outfolder, paste0(make.names(i), ".pdf")), ...)
           print(ESplot(ES, i, xlab, ylab, resolution))
@@ -64,7 +64,7 @@ plotES <- function(TFEAresults, TF, outfolder=".",
         }else{
           warning(i, "is not a valid TF name.")
         }
-      }
+      })
     }else{
       if(length(TF)==1){
         i <- TF
