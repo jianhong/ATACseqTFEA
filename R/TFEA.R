@@ -1,6 +1,8 @@
 #' Transcription factor enrichment analysis
 #' @description Transcription factor enrichment analysis for
 #' ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing).
+#' We treat all the binding sites for one TF as a TF set and
+#' all the open regions as features for random walking.
 #' @param bamExp A vector of characters indicates the file names of
 #' experiment bams. The bam file must be the one with shifted reads.
 #' @param bamCtl A vector of characters indicates the file names of

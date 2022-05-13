@@ -51,7 +51,7 @@ To help researchers quickly assess the differential activity of hundreds of TFs
 by detect the difference in TF footprint via enrichment score[@subramanian2005gene], 
 we have developed the _ATACseqTFEA_ package. 
 The _ATACseqTFEA_ package is a robust and reliable computational tool to
-identifie the key regulators responding to a phenotype. 
+identify the key regulators responding to a phenotype. 
 
 
 # Quick start
