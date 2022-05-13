@@ -24,6 +24,7 @@
 #' @importFrom IRanges IRanges
 #' @importFrom S4Vectors queryHits subjectHits
 #' @importFrom BiocGenerics `%in%`
+#' @importFrom TFBSTools ID
 #' @export
 #' @author Jianhong Ou
 #' @examples
@@ -51,6 +52,12 @@ prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
   }else{
     stopifnot("grange must be a GRanges Object"=is(grange, "GRanges"))
     p <- grange
+  }
+  stopifnot((inherits(pwms, c("PFMatrixList", "PWMatrixList"))))
+  if(length(names(pwms))==0){
+    n <- vapply(pwms, FUN=ID, FUN.VALUE = character(1))
+    stopifnot('Can not identify the name of pwms'=length(n)==length(pwms))
+    names(pwms) <- n
   }
   motif_pos <- matchMotifs(pwms=pwms, subject=p,
                            genome = genome, out = "positions",

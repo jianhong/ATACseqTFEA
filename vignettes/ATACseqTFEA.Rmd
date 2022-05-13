@@ -20,7 +20,7 @@ suppressPackageStartupMessages({
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, fig.width=5, fig.height=3.5)
 ```
 
-#Introduction
+# Introduction
 
 ATAC-seq, an assay for Transposase-Accessible Chromatin using sequencing, is a
 widely used technique for chromatin accessibility analysis. 
@@ -35,13 +35,15 @@ Another group find the DATFs by enrichment test, such as BiFET[@youn2019bifet],
 diffTF[@berest2019quantification] and TFEA[@rubin2020transcription].
 For single-cell ATAC-seq analysis, Signac and chromVar are widely used tools.
 
+# Motivation
+
 All of these tools detect the DATF by only considering the open status of 
-chromatin. None of them take the TF footprint into acount. The open status 
-provide the possiblity of TF can bind to that position. 
+chromatin. None of them take the TF footprint into count. The open status 
+provide the possibility of TF can bind to that position. 
 The TF footprint by ATAC-seq show the status of TF bindings. 
 
 To help researchers quickly assess the differential activity of hundreds of TFs
-by detect the difference in TF footprint, 
+by detect the difference in TF footprint via enrichment score[@subramanian2005gene], 
 we have developed the _ATACseqTFEA_ package. 
 The _ATACseqTFEA_ package is a robust and reliable computational tool to
 identifie the key regulators responding to a phenotype. 
@@ -97,6 +99,14 @@ The merged motifs were exported by motifStack (v 1.30.0).
 ```{r}
 motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
                                package="ATACseqTFEA"))
+```
+
+An other full list of non-redundant TF motifs are also available by downloading
+the data from [DeepSTARR](https://github.com/bernardo-de-almeida/motif-clustering)[@de2021deepstarr]. There are 6502 motifs in the data set.
+```{r}
+fullListMotifs <- readRDS(system.file("extdata", "cluster_PWMs.rds",
+                                      package="ATACseqTFEA"))
+fullListMotifs
 ```
 
 To scan the binding sites along a genome, an `BSgenome` object is required by
@@ -175,7 +185,7 @@ genes <- genes(TxDb.Drerio.UCSC.danRer10.refGene)
 seqlev <- paste0("chr", 1:25)
 peaks <- sapply(pfs, import, format="narrowPeak")
 peaks <- reduce(unlist(GRangesList(peaks)))
-mts <- prepareBindingSites(motifs, Drerio, seqlev, 
+mts <- prepareBindingSites(fullListMotifs, Drerio, seqlev, 
                            grange=peaks, 
                            p.cutoff = 5e-05)
 saveRDS(res, "res.rds")
@@ -184,10 +194,7 @@ bamExp <- file.path("bam", paste0("bowtie2.danRer10.sp7po4dpa.rep", seq.int(2),
                                   ".markDup.bam"))
 bamCtl <- file.path("bam", paste0("bowtie2.danRer10.sp7po0dpa.rep", seq.int(2), 
                                   ".markDup.bam"))
-res <- TFEA(bamExp, bamCtl, bindingSites=mts,
-            openscoreZcutoff=0,
-            bindingScoreLog2FCcutoff=0,
-            bindingScorePvalCutoff=1)
+res <- TFEA(bamExp, bamCtl, bindingSites=mts)
 saveRDS(res, "res.rds")
 #res <- readRDS("res.rds")
 ## get all the enrichment score plots

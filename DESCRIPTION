@@ -2,10 +2,8 @@ Package: ATACseqTFEA
 Type: Package
 Title: Transcription Factor Enrichment Analysis for ATAC-seq
 Version: 0.1.4
-Author: Jianhong Ou <jianhong.ou@duke.edu>
 Authors@R: person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
         role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488"))
-Maintainer: Jianhong Ou <jianhong.ou@duke.edu>
 Description: Assay for Transpose-Accessible Chromatin using sequencing (ATAC-seq)
     is a technique to assess genome-wide chromatin accessibility by probing open
     chromatin with hyperactive mutatnt Tn5 Transposase that inserts sequencing
@@ -13,18 +11,18 @@ Description: Assay for Transpose-Accessible Chromatin using sequencing (ATAC-seq
     current computational method that detects differential activity of 
     transcription factors (TFs). ATACseqTFEA not only use the difference of 
     open region informations, but also (or more emphersize) the difference of
-    TFs footprints.ATACseqTFEA provides an easy, rigorous way to broadly asess
+    TFs footprints (cuting sites or insertion sites).
+    ATACseqTFEA provides an easy, rigorous way to broadly asess
     TF activity changes between two conditions.
-Depends: R (>= 4.0), Matrix, GenomicRanges
+Depends: R (>= 4.2), Matrix, GenomicRanges
 Imports: BiocGenerics, BSgenome, S4Vectors, IRanges,
     GenomicAlignments, GenomeInfoDb,
-    Rsamtools, motifmatchr,
+    Rsamtools, motifmatchr, TFBSTools,
     stats, pracma, grDevices, 
     ggplot2, ggrepel, dplyr, limma, methods
-Suggests: BSgenome.Drerio.UCSC.danRer10, knitr, testthat, ATACseqQC, TFBSTools
+Suggests: BSgenome.Drerio.UCSC.danRer10, knitr, testthat, ATACseqQC
 biocViews: Sequencing, DNAseq, ATACSeq, GeneRegulation
 License: GPL(>= 2)
 Encoding: UTF-8
-LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
