@@ -124,11 +124,18 @@ reduceList <- function(query_new){
     l <- query_new$qid
   }
   ## remove the subset items
-  sub <- vapply(seq_along(l), FUN = function(.e){
-    any(vapply(l[-.e], FUN = function(.ele){
-      length(setdiff(l[[.e]], .ele))
-    }, FUN.VALUE = integer(1L))==0)
-  }, FUN.VALUE = logical(1L))
+  ol <- findOverlaps(query_new,
+                     drop.self=TRUE,
+                     drop.redundant=FALSE,
+                     minoverlap = 1L)
+  ol <- ol[lengths(l[queryHits(ol)])<lengths(l[subjectHits(ol)])]
+  sub <- mapply(setdiff, l[queryHits(ol)], l[subjectHits(ol)],
+                SIMPLIFY = FALSE)
+  sub <- lengths(sub)==0
+  sub <- split(sub, queryHits(ol))
+  sub <- vapply(sub, FUN = any, FUN.VALUE = logical(1L))
+  sub <- sub[as.character(seq_along(query_new))]
+  sub[is.na(sub)] <- FALSE
   query_new[!sub]
 }
 
