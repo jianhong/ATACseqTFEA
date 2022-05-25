@@ -22,7 +22,7 @@ Imports: BiocGenerics, S4Vectors, IRanges,
     stats, pracma, grDevices, 
     ggplot2, ggrepel, dplyr, limma, methods
 Suggests: BSgenome.Drerio.UCSC.danRer10, knitr, testthat, ATACseqQC
-biocViews: Sequencing, DNAseq, ATACSeq, GeneRegulation
+biocViews: Sequencing, DNASeq, ATACSeq, MNaseSeq, GeneRegulation
 License: GPL(>= 2)
 Encoding: UTF-8
 VignetteBuilder: knitr
