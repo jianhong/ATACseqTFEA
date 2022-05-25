@@ -12,7 +12,8 @@ prepareBindingSites(
   w = 7,
   grange,
   maximalBindingWidth = 40L,
-  mergeBindingSitesByPercentage = 0.8
+  mergeBindingSitesByPercentage = 0.8,
+  ignore.strand = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ Maximal binding site width. Default is 40.}
 \item{mergeBindingSitesByPercentage}{A numeric vector (length=1).
 The percentage of overlapping region of binding sites to merge as one
 binding site.}
+
+\item{ignore.strand}{When set to TRUE, the strand information is ignored in
+the calculations.}
 }
 \value{
 A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} with

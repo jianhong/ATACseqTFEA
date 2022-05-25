@@ -3,17 +3,18 @@ Type: Package
 Title: Transcription Factor Enrichment Analysis for ATAC-seq
 Version: 0.99.0
 Authors@R: person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
-        role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488"))
-Description: Assay for Transpose-Accessible Chromatin using sequencing (ATAC-seq)
-    is a technique to assess genome-wide chromatin accessibility by probing open
-    chromatin with hyperactive mutatnt Tn5 Transposase that inserts sequencing
-    adaters into open regions of the genome. ATACseqTFEA is a improvement of 
-    current computational method that detects differential activity of 
-    transcription factors (TFs). ATACseqTFEA not only use the difference of 
-    open region informations, but also (or more emphersize) the difference of
-    TFs footprints (cuting sites or insertion sites).
-    ATACseqTFEA provides an easy, rigorous way to broadly asess
-    TF activity changes between two conditions.
+    role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488"))
+Description: Assay for Transpose-Accessible Chromatin using sequencing
+    (ATAC-seq) is a technique to assess genome-wide chromatin accessibility
+    by probing open chromatin with hyperactive mutant Tn5 Transposase that
+    inserts sequencing adapters into open regions of the genome.
+    ATACseqTFEA is a improvement of current computational method that detects
+    differential activity of transcription factors (TFs).
+    ATACseqTFEA not only use the difference of open region information,
+    but also (or emphasize) the difference of TFs
+    footprints (cutting sites or insertion sites).
+    ATACseqTFEA provides an easy, rigorous way to broadly assess TF
+    activity changes between two conditions.
 Depends: R (>= 4.2), Matrix, GenomicRanges
 Imports: BiocGenerics, S4Vectors, IRanges,
     GenomicAlignments, GenomeInfoDb,
@@ -25,4 +26,4 @@ biocViews: Sequencing, DNAseq, ATACSeq, GeneRegulation
 License: GPL(>= 2)
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0

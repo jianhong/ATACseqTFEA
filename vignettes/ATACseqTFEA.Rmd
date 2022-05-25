@@ -157,23 +157,26 @@ res <- TFEA(bamExp, bamCtl, bindingSites=bindingSites)
 ## volcanoplot
 ESvolcanoplot(TFEAresults=res)
 ### plot enrichment score for one TF
-TF <- "Myog"
+TF <- "Tal1::Gata1"
 print(plotES(res, TF=TF, outfolder=NA))
 ## footprint
-bs <- bindingSites[sapply(bindingSites$motif, 
-                          function(.ele) TF %in% .ele)]
+bs <- getBindingSites(res)
+bs <- bs[vapply(bs$motif, 
+                FUN=function(.ele) TF %in% .ele,
+                FUN.VALUE = logical(1L))]
 bs$score <- mapply(bs$score, bs$motif, FUN = function(score, motif){
-  score[motif==TF]
+  max(score[motif==TF])
 })
 sigs <- factorFootprints(c(bamCtl, bamExp), 
-                         pfm = motifs[[TF]]@profileMatrix,
+                         pfm = as.matrix(motifs[[TF]]),
                          bindingSites = bs,
                          seqlev = seqlev, genome = Drerio,
                          upstream = 100, downstream = 100,
                          group = rep(c("WT", "KD"), each=2))
 ## export the results into a csv file
-write.csv(res$resultsTable, "enrichment.csv", 
-          row.names=FALSE)
+#write.csv(res$resultsTable, "enrichment.csv", 
+#          row.names=FALSE)
+
 ```
 
 
@@ -189,20 +192,16 @@ library(TxDb.Drerio.UCSC.danRer10.refGene)
 genes <- genes(TxDb.Drerio.UCSC.danRer10.refGene)
 ## only search the ranges for peaks.
 seqlev <- paste0("chr", 1:25)
-peaks <- sapply(pfs, import, format="narrowPeak")
+peaks <- lapply(peak_files, import, format="narrowPeak")
 peaks <- reduce(unlist(GRangesList(peaks)))
 mts <- prepareBindingSites(fullListMotifs, Drerio, seqlev, 
                            grange=peaks, 
-                           p.cutoff = 5e-05)
-saveRDS(res, "res.rds")
-#mts <- readRDS("mts.rds")
-bamExp <- file.path("bam", paste0("bowtie2.danRer10.sp7po4dpa.rep", seq.int(2), 
-                                  ".markDup.bam"))
-bamCtl <- file.path("bam", paste0("bowtie2.danRer10.sp7po0dpa.rep", seq.int(2), 
-                                  ".markDup.bam"))
+                           p.cutoff = 1e-05)
+bamExp <- dir("bam", pattern = "treatment_group_key_words",
+              full.names = TRUE)
+bamCtl <- file.path("bam", pattern = "control_group_key_words",
+              full.names = TRUE)
 res <- TFEA(bamExp, bamCtl, bindingSites=mts)
-saveRDS(res, "res.rds")
-#res <- readRDS("res.rds")
 ## get all the enrichment score plots
 dir.create("ESplots")
 g <- plotES(res, outfolder="ESplots")
@@ -215,18 +214,21 @@ library(ATACseqQC)
 outfolder <- "footprint"
 dir.create(outfolder)
 for(TF in res$resultsTable$TF[res$resultsTable$adjPval<0.05]){
-  bs <- mts[sapply(mts$motif, 
-                   function(.ele) TF %in% .ele)]
-  bs$score <- unlist(mapply(bs$score, bs$motif, FUN = function(score, motif){
-    score[motif==TF][1]
-    }))
+  bs <- getBindingSites(res)
+  bs <- bs[vapply(bs$motif, 
+                FUN=function(.ele) TF %in% .ele,
+                FUN.VALUE = logical(1L))]
+  bs$score <- mapply(bs$score, bs$motif, FUN = function(score, motif){
+    max(score[motif==TF])
+  })
   pdf(file.path(outfolder, paste(TF, ".pdf")))
   factorFootprints(c(bamCtl, bamExp), 
-                   pfm = motifs[[TF]]@profileMatrix,
+                   pfm = as.matrix(motifs[[TF]]),
                    bindingSites = bs,
                    seqlev = seqlev, genome = Drerio,
                    upstream = 100, downstream = 100,
-                   group = rep(c("WT", "KD"), each=2))
+                   group = rep(c("WT", "KD"),
+                               c(length(bamCtl), length(bamExp))))
   dev.off()
 }
 
@@ -234,5 +236,12 @@ for(TF in res$resultsTable$TF[res$resultsTable$adjPval<0.05]){
 write.csv(res$resultsTable, "enrichment.csv", 
           row.names=FALSE)
 ```
+
+# SessionInfo
+
+```{r}
+sessionInfo()
+```
+
 
 # References

@@ -6,8 +6,12 @@ test_that("prepareBindingsites works not correct", {
                              grange=GRanges("chr1",
                                             IRanges(5000, 100000)),
                              p.cutoff = 5e-05)
-  res <- readRDS((system.file("extdata", "bindingSites.rds",
-                              package="ATACseqTFEA")))
-  expect_true(all(start(res)==start(mts)))
-  expect_true(all(end(res)==end(mts)))
+  expect_false(any(duplicated(mts)))
+  expect_true(all(width(mts)<40L))
+  ## test ignore.strand = FALSE
+  mts <- prepareBindingSites(motifs, Drerio, seqlev="chr1",
+                             grange=GRanges("chr1",
+                                            IRanges(5000, 100000)),
+                             p.cutoff = 1e-05,
+                             ignore.strand = FALSE)
 })

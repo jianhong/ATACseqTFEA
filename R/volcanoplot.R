@@ -54,6 +54,6 @@ ESvolcanoplot <- function(TFEAresults,
     geom_text_repel(data=subset(res, !is.na(res$symbol)),
                     aes_string(label="symbol"),
                     box.padding = unit(0.45, "lines")) +
-    scale_color_manual(values = levels(factor(res$Color)), guide=FALSE)
+    scale_color_manual(values = levels(factor(res$Color)), guide="none")
   g
 }

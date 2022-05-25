@@ -210,7 +210,7 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
                  sort.by = "none", number=nrow(fit))
 
   ## sort the results by t value
-  mcols(bindingSites) <- cbind(mcols(bindingSites), tt)
+  mcols(bindingSites) <- cbind(mcols(bindingSites), adj.bindingscore, tt)
   ## remove the log2 foldchange smaller than bindingScoreLog2FCcutoff
   ## and pvalue greater than bindingScorePvalCutoff
   ## otherwise dataset is too large

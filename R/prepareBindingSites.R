@@ -16,6 +16,8 @@
 #' @param mergeBindingSitesByPercentage A numeric vector (length=1).
 #' The percentage of overlapping region of binding sites to merge as one
 #' binding site.
+#' @param ignore.strand When set to TRUE, the strand information is ignored in
+#' the calculations.
 #' @return A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} with
 #' all the positions of matches.
 #' @import GenomicRanges
@@ -25,6 +27,7 @@
 #' @importFrom S4Vectors queryHits subjectHits
 #' @importFrom BiocGenerics `%in%`
 #' @importFrom TFBSTools ID
+#' @importFrom utils combn
 #' @export
 #' @author Jianhong Ou
 #' @examples
@@ -39,7 +42,8 @@
 prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
                                 p.cutoff = 1e-05, w = 7, grange,
                                 maximalBindingWidth = 40L,
-                                mergeBindingSitesByPercentage = 0.8){
+                                mergeBindingSitesByPercentage = 0.8,
+                                ignore.strand = TRUE){
   stopifnot("genome must be a BSgenome object."=is(genome, "BSgenome"))
   if(!is.na(maximalBindingWidth[1])){
     maximalBindingWidth <- maximalBindingWidth[1]
@@ -70,45 +74,11 @@ prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
     seqlevels(mts.unlist)[seqlevels(mts.unlist) %in% seqlev]
   seqinfo(mts.unlist) <- si[seqlev]
   rm(motif_pos)
-  ## reduce is not good.
-  ## try a way to reduce by percentage of overlaps
-  reduceByPercentage <- function(query, percentage){
-    ol <- findOverlaps(query = query, drop.self=TRUE, drop.redundant=TRUE)
-    if(length(ol)==0) return(query)
-    qh <- query[queryHits(ol)]
-    sh <- query[subjectHits(ol)]
-    oh <- GRanges(seqnames(qh),
-                  IRanges(start=ifelse(start(qh)>start(sh),
-                                       start(qh), start(sh)),
-                          end=ifelse(end(qh)<end(sh),
-                                     end(qh), end(sh))),
-                  strand = strand(qh))
-    wqh <- width(qh)
-    wsh <- width(sh)
-    woh <- width(oh)
-    pqh <- woh/wqh
-    psh <- woh/wsh
-    keep <- pqh>=percentage | psh>=percentage
-    if(sum(keep)==0) return(query)
-    ol <- ol[keep]
 
-    li <- as.data.frame(ol)
-    qHid <- unique(queryHits(ol))
-    li <- rbind(li, data.frame(queryHits=qHid, subjectHits=qHid))
-    li$queryHits <- formatC(li$queryHits,
-                            width = nchar(as.character(max(li$queryHits))),
-                            flag = "0")
-    q2 <- split(query[li$subjectHits], li$queryHits)
-    q2 <- reduce(GRangesList(q2))
-    q2 <- unlist(q2)
-    q2$motif <- split(query$motif[li$subjectHits], li$queryHits)[names(q2)]
-    q2$score <- split(query$score[li$subjectHits], li$queryHits)[names(q2)]
-
-    c(query[-unique(c(queryHits(ol), subjectHits(ol)))], q2)
-  }
   mts.unlist <- split(mts.unlist, seqnames(mts.unlist)) ## memory
   mts.reduce <- lapply(mts.unlist, reduceByPercentage,
-                       percentage = mergeBindingSitesByPercentage)
+                       percentage = mergeBindingSitesByPercentage,
+                       ignore.strand = ignore.strand)
   rm(mts.unlist)
   mts.reduce <- mts.reduce[lengths(mts.reduce)>0]
   mts.reduce <- unlist(GRangesList(mts.reduce))
@@ -120,3 +90,102 @@ prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
 
   return(mts.reduce)
 }
+
+
+findOverlaps1 <- function(query, percentage, ignore.strand, ...){
+  stopifnot(percentage[1]>0 && percentage[1]<1)
+  hits <- findOverlaps(query = query,
+                       minoverlap = 0L,
+                       maxgap = -1L,
+                       ...)
+  overlaps <- pintersect(query[queryHits(hits)],
+                         query[subjectHits(hits)],
+                         ignore.strand = ignore.strand)
+  mcols(overlaps) <- NULL
+  percentOverlap0 <- width(overlaps)/width(query[queryHits(hits)])
+  percentOverlap1 <- width(overlaps)/width(query[subjectHits(hits)])
+  percentOverlap <- ifelse(
+    percentOverlap0>percentOverlap1,
+    percentOverlap0, percentOverlap1
+  )
+  keep <- percentOverlap>=percentage
+  list(hits=hits[keep], overlaps=overlaps[keep])
+}
+
+reduceList <- function(query_new){
+  l <- query_new$qid
+  if(any(duplicated(l))){ ## remove the duplicated items
+    query_new <- split(query_new,
+               vapply(l, FUN=paste, collapse=",",FUN.VALUE = character(1L)))
+    query_new <- reduce(query_new)
+    query_new <- unlist(query_new)
+    query_new$qid <- strsplit(names(query_new), split=",")
+    names(query_new) <- NULL
+    l <- query_new$qid
+  }
+  ## remove the subset items
+  sub <- vapply(seq_along(l), FUN = function(.e){
+    any(vapply(l[-.e], FUN = function(.ele){
+      length(setdiff(l[[.e]], .ele))
+    }, FUN.VALUE = integer(1L))==0)
+  }, FUN.VALUE = logical(1L))
+  query_new[!sub]
+}
+
+## Reduce by percentage of overlaps to avoid the binding site become too broad
+reduceByPercentage <- function(query, percentage, ignore.strand){
+  query_new <- query
+  mcols(query_new) <- NULL
+  query_new$qid <- seq_along(query)
+  while(TRUE){
+    len1 <- length(query_new)
+    ol <- findOverlaps1(query_new,
+                        percentage = percentage,
+                        ignore.strand=ignore.strand,
+                        select="all",
+                        drop.self=FALSE,
+                        drop.redundant=FALSE)
+    if(length(ol$hits)==length(query_new)) break
+    overlaps_key <- ol$overlaps
+    ol <- ol$hits
+    stopifnot(all(subjectHits(ol) %in% queryHits(ol)))
+    stopifnot(all(queryHits(ol) %in% subjectHits(ol)))
+    stopifnot(sum(queryHits(ol)==subjectHits(ol))==length(query_new))
+    query_new <- query_new[subjectHits(ol)]
+    q2_qid <- split(query_new$qid,
+                            queryHits(ol))
+    q2_qid <- lapply(q2_qid, unlist, use.names = FALSE)
+    q2_qid <- lapply(q2_qid, unique)
+    stopifnot(all(seq_along(query) %in% unlist(q2_qid)))
+    query_new <- split(overlaps_key, queryHits(ol))
+    query_new <- reduce(query_new, ignore.strand=ignore.strand)
+    query_new <- unlist(query_new)
+    query_new$qid <- q2_qid
+    query_new <- sort(query_new)
+    q2_qid <- paste(
+      seqnames(query_new),
+      start(query_new),
+      vapply(query_new$qid,
+             FUN=function(.ele) paste(.ele, collapse=";"),
+             FUN.VALUE = character(1)))
+    query_new <- query_new[!duplicated(q2_qid)]
+    #check qid correlation
+    query_new <- reduceList(query_new)
+    len2 <- length(query_new)
+    if(len2==len1) break
+  }
+  stopifnot('The reduce of binding sites does not work correctly.'=
+              all(seq_along(query) %in% unlist(query_new$qid)))
+  query_new <- sort(query_new)
+  ## reduce binding range
+  q2 <- lapply(query_new$qid, function(.ele){
+    query[as.numeric(.ele)]
+  })
+  q2_motif <- lapply(q2, function(.ele) .ele$motif)
+  q2_score <- lapply(q2, function(.ele) .ele$score)
+  query_new$qid <- NULL
+  query_new$score <- q2_score
+  query_new$motif <- q2_motif
+  query_new
+}
+
