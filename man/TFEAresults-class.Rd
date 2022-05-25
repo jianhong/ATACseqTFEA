@@ -69,9 +69,9 @@ An object of class \code{"TFEAresults"}
 \section{Slots}{
 
 \describe{
-\item{\code{enrichmentScore}}{\code{"numeric \link[Matrix]{Matrix}"}, specify the enrichment
-score for each transcription factor (TF). Every row represents a TF.
-The columns represents the accumulated enrichment score for that rank.}
+\item{\code{enrichmentScore}}{\code{"numeric \link[Matrix]{Matrix}"}, specify the
+enrichment score for each transcription factor (TF). Every row represents
+a TF. The columns represents the accumulated enrichment score for that rank.}
 
 \item{\code{bindingSites}}{\code{\link[GenomicRanges:GRanges-class]{GenomicRanges}}
 object. It is keep same length and order as the columns in enrichmentScore.}

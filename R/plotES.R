@@ -5,7 +5,7 @@
 #' @param outfolder character(1). Output file path.
 #' @param xlab,ylab character string giving label for x-axis/y-axis.
 #' @param resolution integer(1). The number of bars plotted in the bottom of
-#' figure to show the density of occurence of events.
+#' figure to show the density of occurrence of events.
 #' @param ... parameter passed to pdf.
 #' @return NULL if outfolder is set or ggplot object.
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_rug xlab ylab

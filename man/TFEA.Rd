@@ -35,11 +35,11 @@ is a helper function to generate the binding sites.
 Users can also use other software for example fimo to generate the list.}
 
 \item{proximal, distal}{numeric(1) or integer(1).
-basepair for open region from binding sites (proximal) and
-extented region for background (distal)
+bases for open region from binding sites (proximal) and
+extended region for background (distal)
 of the binding region for aggregate ATAC-seq footprint.}
 
-\item{gap}{numeric(1) or integer(1). basepair for gaps among binding sites,
+\item{gap}{numeric(1) or integer(1). bases for gaps among binding sites,
 proximal, and distal. default is 10L.}
 
 \item{openscoreZcutoff}{Open score Z value cutoff value. Default is 0.

@@ -21,7 +21,7 @@ ESvolcanoplot(
 
 \item{TFnameToShow}{Transcription factor names to be drawn.}
 
-\item{significantCutoff}{Cutoff value for significants.}
+\item{significantCutoff}{Cutoff value for significant.}
 
 \item{col}{Color sets for the points.}
 

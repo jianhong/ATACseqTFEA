@@ -3,7 +3,7 @@
 #' @param TFEAresults A \link{TFEAresults} object. Output of \link{TFEA}.
 #' @param xlab,ylab character string giving label for x-axis/y-axis.
 #' @param TFnameToShow Transcription factor names to be drawn.
-#' @param significantCutoff Cutoff value for significants.
+#' @param significantCutoff Cutoff value for significant.
 #' @param col Color sets for the points.
 #' @param ... parameter passed to pdf.
 #' @return ggplot object.

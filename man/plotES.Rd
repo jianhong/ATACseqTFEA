@@ -24,7 +24,7 @@ plotES(
 \item{xlab, ylab}{character string giving label for x-axis/y-axis.}
 
 \item{resolution}{integer(1). The number of bars plotted in the bottom of
-figure to show the density of occurence of events.}
+figure to show the density of occurrence of events.}
 
 \item{...}{parameter passed to pdf.}
 }

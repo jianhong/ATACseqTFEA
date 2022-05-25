@@ -1,5 +1,5 @@
 #' Prepare binding site for TFEA
-#' @description Prepare binding sites by ginven position weight matrix and
+#' @description Prepare binding sites by given position weight matrix and
 #'  genome.
 #' @param pwms either \code{\link[TFBSTools]{PFMatrix}},
 #' \code{\link[TFBSTools]{PFMatrixList}}, \code{\link[TFBSTools]{PWMatrix}},
@@ -9,7 +9,7 @@
 #' @param p.cutoff p-value cutoff for returning motifs; default is 1e-05
 #' @param w parameter controlling size of window for filtration; default is 7
 #' @param grange GRanges for motif search. If it is set, function will only
-#' search the binding site within the grange. Usually a peaklist should be
+#' search the binding site within the grange. Usually a peak list should be
 #' supplied.
 #' @param maximalBindingWidth A numeric vector(length=1).
 #' Maximal binding site width. Default is 40.

@@ -30,7 +30,7 @@ prepareBindingSites(
 \item{w}{parameter controlling size of window for filtration; default is 7}
 
 \item{grange}{GRanges for motif search. If it is set, function will only
-search the binding site within the grange. Usually a peaklist should be
+search the binding site within the grange. Usually a peak list should be
 supplied.}
 
 \item{maximalBindingWidth}{A numeric vector(length=1).
@@ -48,7 +48,7 @@ A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} with
 all the positions of matches.
 }
 \description{
-Prepare binding sites by ginven position weight matrix and
+Prepare binding sites by given position weight matrix and
  genome.
 }
 \examples{

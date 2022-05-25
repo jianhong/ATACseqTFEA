@@ -3,9 +3,9 @@
 #'   represents the results of \link{TFEA}.
 #' @aliases TFEAresults
 #' @rdname TFEAresults-class
-#' @slot enrichmentScore \code{"numeric \link[Matrix]{Matrix}"}, specify the enrichment
-#'   score for each transcription factor (TF). Every row represents a TF.
-#'   The columns represents the accumulated enrichment score for that rank.
+#' @slot enrichmentScore \code{"numeric \link[Matrix]{Matrix}"}, specify the
+#'  enrichment score for each transcription factor (TF). Every row represents
+#'  a TF. The columns represents the accumulated enrichment score for that rank.
 #' @slot bindingSites \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}}
 #' object. It is keep same length and order as the columns in enrichmentScore.
 #' @slot motifID \code{"list"}. The ranks of binding sites for each TF.
