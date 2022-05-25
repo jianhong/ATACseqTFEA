@@ -141,7 +141,6 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
     counts$dis.gap <- NULL
     stopifnot(all(counts$dis>=0))
     stopifnot(all(counts$pro>=0))
-    #rownames(counts) <- names(binding)
     counts ## data frame with colnames bs, pro and dis
   }
   counts <- mapply(function(a, b) {
