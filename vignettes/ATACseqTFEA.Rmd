@@ -32,23 +32,24 @@ widely used technique for chromatin accessibility analysis.
 Detecting differential activation of transcription factors between two 
 different experiment conditions provides the possibility of decoding the 
 key factors in a phenotype. Lots of tools have been developed to detect 
-differential activity of TFs (DATFs) for different groups of samples. 
+the differential activity of TFs (DATFs) for different groups of samples. 
 Those tools can be divided into two groups. One group detects DATFs from 
 differential accessibility analysis, such as MEME[@bailey2006meme],
-HOMER[@heinz2010simple], enrichr[@chen2013enrichr] and ChEA[@lachmann2010chea].
-Another group find the DATFs by enrichment test, such as BiFET[@youn2019bifet],
-diffTF[@berest2019quantification] and TFEA[@rubin2020transcription].
+HOMER[@heinz2010simple], enrichr[@chen2013enrichr], and ChEA[@lachmann2010chea].
+Another group finds the DATFs by enrichment tests, such as
+BiFET[@youn2019bifet], diffTF[@berest2019quantification], and TFEA[@rubin2020transcription].
 For single-cell ATAC-seq analysis, Signac and chromVar are widely used tools.
 
 # Motivation
 
 All of these tools detect the DATF by only considering the open status of 
 chromatin. None of them take the TF footprint into count. The open status 
-provide the possibility of TF can bind to that position. 
-The TF footprint by ATAC-seq show the status of TF bindings. 
+provides the possibility of TF can bind to that position. 
+The TF footprint by ATAC-seq shows the status of TF bindings. 
 
 To help researchers quickly assess the differential activity of hundreds of TFs
-by detect the difference in TF footprint via enrichment score[@subramanian2005gene], 
+by detecting the difference in TF footprint via enrichment
+score[@subramanian2005gene],
 we have developed the _ATACseqTFEA_ package. 
 The _ATACseqTFEA_ package is a robust and reliable computational tool to
 identify the key regulators responding to a phenotype. 
@@ -59,18 +60,18 @@ identify the key regulators responding to a phenotype.
 Here is an example using _ATACseqTFEA_ with a subset of ATAC-seq data.
 
 ## Installation
-First install _ATACseqTFEA_ and other packages required to run 
+First, install _ATACseqTFEA_ and other packages required to run 
 the examples.
 Please note that the example dataset used here is from zebrafish. 
-To run analysis with dataset from a different species or different assembly, 
-please install the corresponding Bsgenome and TxDb.
-For example, to analyze mouse data aligned to mm10, 
-please install BSgenome.Mmusculus.UCSC.mm10, 
-and TxDb.Mmusculus.UCSC.mm10.knownGene. 
+To run an analysis with a dataset from a different species or different assembly, 
+please install the corresponding Bsgenome and "TxDb".
+For example, to analyze mouse data aligned to "mm10", 
+please install "BSgenome.Mmusculus.UCSC.mm10", 
+and "TxDb.Mmusculus.UCSC.mm10.knownGene". 
 You can also generate a TxDb object by 
-functions `makeTxDbFromGFF` from a local gff file,
+functions `makeTxDbFromGFF` from a local "gff" file,
 or `makeTxDbFromUCSC`, `makeTxDbFromBiomart`, and `makeTxDbFromEnsembl`, 
-from online resources in _GenomicFeatures_ package.
+from online resources in the _GenomicFeatures_ package.
 
 ```{r, eval=FALSE}
 library(BiocManager)
@@ -90,10 +91,10 @@ library(ATACseqQC) ## for footprint
 
 ## prepare binding sites
 
-To do TFEA, there are two inputs, the binding sites and the change ranks.
-To get the binding sites, ATACseqTFEA package provide `prepareBindingSites` 
-function. Users can also try to get the binding sites list by other tools
-such as fimo[@grant2011fimo].
+To do TFEA, there are two inputs, the binding sites, and the change ranks.
+To get the binding sites, the _ATACseqTFEA_ package provides the 
+`prepareBindingSites` function. Users can also try to get the binding sites
+list by other tools such as "fimo"[@grant2011fimo].
 
 The `prepareBindingSites` function request a cluster of position weight matrix 
 (PWM) of TF motifs. _ATACseqTFEA_ prepared a merged `PWMatrixList` for 
@@ -115,7 +116,7 @@ fullListMotifs <- readRDS(system.file("extdata", "cluster_PWMs.rds",
 fullListMotifs
 ```
 
-To scan the binding sites along a genome, an `BSgenome` object is required by
+To scan the binding sites along a genome, a `BSgenome` object is required by
 the `prepareBindingSites` function.
 
 ```{r}
@@ -133,10 +134,10 @@ bindingSites <-
 ## do TFEA
 
 The shifted bam files by ATACseqQC::shiftGAlignmentsList[@ou2018atacseqqc] 
-(for paired end) or  shiftGAlignments (for single end) of 
-experiment and control group are required for change ranks, 
+(for paired-end) or  shiftGAlignments (for single-end) of the
+experiment and control group are required for the changing ranks, 
 which is required by TFEA. The samples must be at
-least biological duplicated.
+least biologically duplicated.
 
 ```{r}
 bamExp <- system.file("extdata",
