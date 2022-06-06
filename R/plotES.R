@@ -33,7 +33,8 @@ plotES <- function(TFEAresults, TF, outfolder=".",
                                    getMotifID(TFEAresults)[[i]]),
                           size=min(resolution,
                                    nrow(subset(dat, dat$x %in%
-                                                 getMotifID(TFEAresults)[[i]])))),
+                                                 getMotifID(TFEAresults)[[i]]
+                                               )))),
                sides = "b", position = "jitter") +
       xlab(xlab) + ylab(ylab) + theme_classic() +
       geom_hline(yintercept = 0) + ggtitle(i)

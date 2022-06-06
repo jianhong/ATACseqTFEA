@@ -186,6 +186,7 @@ sigs <- factorFootprints(c(bamCtl, bamExp),
 ```{r eval=FALSE}
 ## load library
 library(ATACseqTFEA)
+library(rtracklayer)
 motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
                                package="ATACseqTFEA"))
 library(BSgenome.Drerio.UCSC.danRer10)
@@ -200,7 +201,7 @@ mts <- prepareBindingSites(fullListMotifs, Drerio, seqlev,
                            p.cutoff = 1e-05)
 bamExp <- dir("bam", pattern = "treatment_group_key_words",
               full.names = TRUE)
-bamCtl <- file.path("bam", pattern = "control_group_key_words",
+bamCtl <- dir("bam", pattern = "control_group_key_words",
               full.names = TRUE)
 res <- TFEA(bamExp, bamCtl, bindingSites=mts)
 ## get all the enrichment score plots

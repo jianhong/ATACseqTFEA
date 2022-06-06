@@ -78,8 +78,12 @@ TFEA <- function(bamExp, bamCtl, indexExp=bamExp, indexCtl=bamCtl,
   if(missing(bamCtl)){
     stop("bamCtl is required.")
   }
-  bindingSites.with.proximal <- bindingSites.with.distal <- bindingSites
-  bindingSites.with.proximal.gap <- bindingSites.with.distal.gap <- bindingSites
+  bindingSites.with.proximal <-
+    bindingSites.with.distal <-
+    bindingSites
+  bindingSites.with.proximal.gap <-
+    bindingSites.with.distal.gap <-
+    bindingSites
   start(bindingSites.with.proximal) <- start(bindingSites) - proximal - gap
   end(bindingSites.with.proximal) <- end(bindingSites) + proximal + gap
   start(bindingSites.with.distal) <-

@@ -139,8 +139,33 @@ reduceList <- function(query_new){
   query_new[!sub]
 }
 
-## Reduce by percentage of overlaps to avoid the binding site become too broad
-reduceByPercentage <- function(query, percentage, ignore.strand){
+#' Reduce by percentage of overlaps of GRanges object
+#' @description Merge the ranges by percentage of overlaps to avoid
+#' broad ranges of continues ranges overlapped with limit bases.
+#' @param query An object of GRanges
+#' @param percentage A numeric vector (length=1).
+#' The percentage of overlapping region of binding sites to merge as one
+#' range.
+#' @param ignore.strand When set to TRUE, the strand information is ignored in
+#' the calculations.
+#' @param colnToKeep The metadata colnums should be kept for reduced GRanges
+#' @return An object of GRanges.
+#' @export
+#' @import GenomicRanges
+#' @importFrom S4Vectors SimpleList
+#' @examples
+#' gr <- GRanges("chr1", IRanges(c(1, 5, 10), width=c(10, 5, 2)))
+#' reduceByPercentage(gr, 0.5, colnToKeep=NULL)
+
+reduceByPercentage <- function(query, percentage, ignore.strand=TRUE,
+                               colnToKeep=c("score", "motif")){
+  stopifnot(is(query, "GRanges"))
+  stopifnot(percentage[1]>0 && percentage[1]<1)
+  stopifnot(is.logical(ignore.strand))
+  stopifnot(length(ignore.strand)==1)
+  if(length(colnToKeep)) {
+    stopifnot(all(colnToKeep %in% colnames(mcols(query))))
+  }
   query_new <- query
   mcols(query_new) <- NULL
   query_new$qid <- seq_along(query)
@@ -188,11 +213,13 @@ reduceByPercentage <- function(query, percentage, ignore.strand){
   q2 <- lapply(query_new$qid, function(.ele){
     query[as.numeric(.ele)]
   })
-  q2_motif <- lapply(q2, function(.ele) .ele$motif)
-  q2_score <- lapply(q2, function(.ele) .ele$score)
   query_new$qid <- NULL
-  query_new$score <- q2_score
-  query_new$motif <- q2_motif
+  if(length(colnToKeep)){
+    for(i in colnToKeep){
+      mcols(query_new)[i] <-
+        SimpleList(lapply(q2, function(.ele) mcols(.ele)[, i]))
+    }
+  }
   query_new
 }
 

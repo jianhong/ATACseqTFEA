@@ -61,8 +61,10 @@ setMethod("show", "TFEAresults", function(object){
   cat("This is an object of TFEAresults\n")
   cat("slot enrichmentScore (", nrow(object@enrichmentScore), "x",
       ncol(object@enrichmentScore), "):\n")
-  show(object@enrichmentScore[seq.int(min(c(3, nrow(object@enrichmentScore)))),
-                              seq.int(min(c(5, ncol(object@enrichmentScore))))])
+  show(object@enrichmentScore[seq.int(min(c(3,
+                                            nrow(object@enrichmentScore)))),
+                              seq.int(min(c(5,
+                                            ncol(object@enrichmentScore))))])
   cat("slot bindingSites:\n")
   show(object@bindingSites)
   cat("slot motifID (", length(object@motifID), "):\n")
@@ -127,11 +129,13 @@ setReplaceMethod("[[", "TFEAresults",
 #' @rdname TFEAresults-class
 #' @export
 #' @aliases getEnrichmentScore
-setGeneric("getEnrichmentScore", function(x) standardGeneric("getEnrichmentScore"))
+setGeneric("getEnrichmentScore", function(x)
+  standardGeneric("getEnrichmentScore"))
 #' @rdname TFEAresults-class
 #' @export
 #' @aliases getEnrichmentScore,TFEAresults-method
-setMethod("getEnrichmentScore", "TFEAresults", function(x) slot(x, "enrichmentScore"))
+setMethod("getEnrichmentScore", "TFEAresults", function(x)
+  slot(x, "enrichmentScore"))
 #' @rdname TFEAresults-class
 #' @export
 #' @aliases getBindingSites
@@ -139,7 +143,8 @@ setGeneric("getBindingSites", function(x) standardGeneric("getBindingSites"))
 #' @rdname TFEAresults-class
 #' @export
 #' @aliases getBindingSites,TFEAresults-method
-setMethod("getBindingSites", "TFEAresults", function(x) slot(x, "bindingSites"))
+setMethod("getBindingSites", "TFEAresults", function(x)
+  slot(x, "bindingSites"))
 #' @rdname TFEAresults-class
 #' @export
 #' @aliases getMotifID

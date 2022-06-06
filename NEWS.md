@@ -1,2 +1,7 @@
+# Change in 0.99.1
+  - export function `reduceByPercentage`
+  - fix the bug in vignette
+  - import utils in DESCRIPTION.
+
 # Change in 0.99.0
   - prepare for submission
