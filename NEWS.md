@@ -1,3 +1,6 @@
+# Change in 0.99.2
+  - remove the import of `utils`.
+  
 # Change in 0.99.1
   - export function `reduceByPercentage`
   - fix the bug in vignette

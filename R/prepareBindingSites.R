@@ -27,7 +27,6 @@
 #' @importFrom S4Vectors queryHits subjectHits
 #' @importFrom BiocGenerics `%in%`
 #' @importFrom TFBSTools ID
-#' @importFrom utils combn
 #' @export
 #' @author Jianhong Ou
 #' @examples
