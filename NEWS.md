@@ -1,3 +1,6 @@
+# Change in 0.99.3
+  - replace `import` by `importFrom`.
+  
 # Change in 0.99.2
   - remove the import of `utils`.
   

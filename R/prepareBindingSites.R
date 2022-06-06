@@ -20,13 +20,15 @@
 #' the calculations.
 #' @return A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} with
 #' all the positions of matches.
-#' @import GenomicRanges
 #' @importFrom GenomeInfoDb seqinfo seqlevels `seqlevels<-` Seqinfo seqlengths
+#' seqnames seqinfo<-
 #' @importFrom motifmatchr matchMotifs
-#' @importFrom IRanges IRanges
-#' @importFrom S4Vectors queryHits subjectHits
+#' @importFrom IRanges IRanges reduce findOverlaps pintersect countOverlaps
+#' distance promoters
+#' @importFrom S4Vectors queryHits subjectHits split mcols mcols<-
 #' @importFrom BiocGenerics `%in%`
-#' @importFrom TFBSTools ID
+#' @importFrom TFBSTools ID PFMatrixList PWMatrixList
+#' @importFrom GenomicRanges GRangesList GRanges
 #' @export
 #' @author Jianhong Ou
 #' @examples
@@ -115,7 +117,8 @@ reduceList <- function(query_new){
   l <- query_new$qid
   if(any(duplicated(l))){ ## remove the duplicated items
     query_new <- split(query_new,
-               vapply(l, FUN=paste, collapse=",",FUN.VALUE = character(1L)))
+               vapply(l, FUN=paste, collapse=",",
+                      FUN.VALUE = character(1L)))
     query_new <- reduce(query_new)
     query_new <- unlist(query_new)
     query_new$qid <- strsplit(names(query_new), split=",")
@@ -150,9 +153,9 @@ reduceList <- function(query_new){
 #' @param colnToKeep The metadata colnums should be kept for reduced GRanges
 #' @return An object of GRanges.
 #' @export
-#' @import GenomicRanges
 #' @importFrom S4Vectors SimpleList
 #' @examples
+#' library(GenomicRanges)
 #' gr <- GRanges("chr1", IRanges(c(1, 5, 10), width=c(10, 5, 2)))
 #' reduceByPercentage(gr, 0.5, colnToKeep=NULL)
 

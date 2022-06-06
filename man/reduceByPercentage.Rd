@@ -31,6 +31,7 @@ Merge the ranges by percentage of overlaps to avoid
 broad ranges of continues ranges overlapped with limit bases.
 }
 \examples{
+library(GenomicRanges)
 gr <- GRanges("chr1", IRanges(c(1, 5, 10), width=c(10, 5, 2)))
 reduceByPercentage(gr, 0.5, colnToKeep=NULL)
 }

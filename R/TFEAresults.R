@@ -11,8 +11,9 @@
 #' @slot motifID \code{"list"}. The ranks of binding sites for each TF.
 #' @slot resultsTable \code{"data.frame"}. The data frame contains the
 #' summarized enrichment score, the p-value, and adjuct p-value for each TF.
-#' @import methods
-#' @import GenomicRanges
+#' @importFrom methods setClass representation prototype setMethod setAs
+#' setReplaceMethod setGeneric as is new slot slot<- show coerce
+#' @importFrom GenomicRanges GRanges
 #' @importFrom IRanges CharacterList
 #' @exportClass TFEAresults
 #' @examples

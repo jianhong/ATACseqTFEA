@@ -35,8 +35,8 @@
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom stats sd
 #' @importFrom pracma erf
-#' @import Matrix
-#' @import GenomicRanges
+#' @importFrom BiocGenerics start end width start<- end<-
+#' @importFrom Matrix Matrix rowSums
 #' @return A \link{TFEAresults} object.
 #' @export
 #' @author Jianhong Ou
