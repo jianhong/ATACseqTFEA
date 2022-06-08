@@ -54,6 +54,7 @@ we have developed the _ATACseqTFEA_ package.
 The _ATACseqTFEA_ package is a robust and reliable computational tool to
 identify the key regulators responding to a phenotype. 
 
+![schematic diagram of ATACseqTFEA](ATACseqTFEA.png)
 
 # Quick start
 

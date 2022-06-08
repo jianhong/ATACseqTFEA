@@ -17,6 +17,8 @@ footprints (cutting sites or insertion sites).
 ATACseqTFEA provides an easy, rigorous way to broadly assess TF activity changes
 between two conditions.
 
+![schematic diagram of ATACseqTFEA](vignettes/ATACseqTFEA.png)
+
 ## Installation
 
 To install this package, start R and enter:

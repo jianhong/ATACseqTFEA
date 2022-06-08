@@ -1,3 +1,6 @@
+# Change in 0.99.4
+  - add schematic diagram.
+
 # Change in 0.99.3
   - replace `import` by `importFrom`.
   
