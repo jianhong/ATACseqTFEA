@@ -1,3 +1,6 @@
+# Change in 0.99.6
+  - add BiocStyle and rmarkdown into Suggests
+  
 # Change in 0.99.5
   - update the license from 'GPL (>=2)' to 'GPL-3'
   - add additional sections with guidelines for bug report and contribution in
