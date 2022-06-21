@@ -9,10 +9,13 @@ TFEA(
   bamCtl,
   indexExp = bamExp,
   indexCtl = bamCtl,
+  positive = 4L,
+  negative = 5L,
   bindingSites,
   proximal = 40L,
   distal = proximal,
   gap = 10L,
+  filter = "proximalRegion>0",
   openscoreZcutoff = 0,
   bindingScoreLog2FCcutoff = 0,
   bindingScorePvalCutoff = 1
@@ -28,6 +31,10 @@ control bams. The bam file must be the one with shifted reads.}
 \item{indexExp, indexCtl}{The names of the index file of the 'BAM' file
 being processed; This is given without the '.bai' extension.}
 
+\item{positive, negative}{integer(1). the size to be shift for
+positive/negative strand.
+If the bam file is 5'end shifed files, please set the parameter to 0.}
+
 \item{bindingSites}{A object of
 \link[GenomicRanges:GRanges-class]{GenomicRanges} indicates
 candidate binding sites. The \link{prepareBindingSites} function
@@ -42,14 +49,19 @@ of the binding region for aggregate ATAC-seq footprint.}
 \item{gap}{numeric(1) or integer(1). bases for gaps among binding sites,
 proximal, and distal. default is 10L.}
 
+\item{filter}{An expression which, when evaluated in the context of
+assays(se), is a logical vector indicating elements or rows to keep.
+The expression results for each assay will be combined and use `or` operator
+to filter the counts assays.}
+
 \item{openscoreZcutoff}{Open score Z value cutoff value. Default is 0.
 Open score is calculated by the count ratio of
 proximal site and distal site.}
 
 \item{bindingScorePvalCutoff, bindingScoreLog2FCcutoff}{Binding score cutoff
-values. Default is 1 and 0. Binding score is calculated by the count ratio of
-proximal site and binding site. The cutoff values are used to decrease
-the total number of binding site for ranking. Increasing the log2FCcutoff
+values. Default is 1 and 0. Binding score is calculated by the count ratio
+of proximal site and binding site. The cutoff values are used to decrease
+the total number of binding site for ranking. Increasing the `log2FCcutoff`
 value and decreasing the P-value cutoff value can greatly decrease the
 memory cost and computing time by decreasing the total binding sites.}
 }
@@ -65,17 +77,18 @@ all the open regions as features for random walking.
 \examples{
 
 bamExp <- system.file("extdata",
-                     c("KD.shift.rep1.bam",
-                       "KD.shift.rep2.bam"),
-                     package="ATACseqTFEA")
+                      c("KD.shift.rep1.bam",
+                        "KD.shift.rep2.bam"),
+                      package="ATACseqTFEA")
 bamCtl <- system.file("extdata",
-                     c("WT.shift.rep1.bam",
-                       "WT.shift.rep2.bam"),
-                     package="ATACseqTFEA")
+                      c("WT.shift.rep1.bam",
+                        "WT.shift.rep2.bam"),
+                      package="ATACseqTFEA")
 bsl <- system.file("extdata", "bindingSites.rds",
-                  package="ATACseqTFEA")
+                   package="ATACseqTFEA")
 bindingSites <- readRDS(bsl)
-res <- TFEA(bamExp, bamCtl, bindingSites=bindingSites)
+res <- TFEA(bamExp, bamCtl, bindingSites=bindingSites,
+            positive=0, negative=0)
 res
 }
 \author{

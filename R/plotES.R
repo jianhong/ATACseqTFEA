@@ -18,9 +18,13 @@
 #' res <- readRDS(res)
 #' g <- plotES(res, TF="KLF9", outfolder=NA)
 #' print(g)
-plotES <- function(TFEAresults, TF, outfolder=".",
-                   xlab="rank", ylab="Enrichment",
-                   resolution=500L, ...){
+plotES <- function(TFEAresults,
+                   TF,
+                   outfolder=".",
+                   xlab="rank",
+                   ylab="Enrichment",
+                   resolution=500L,
+                   ...){
   stopifnot("TFEAresults must be output of TFEA function"=
               is(TFEAresults, "TFEAresults"))
   ES <- t(getEnrichmentScore(TFEAresults))
@@ -38,6 +42,7 @@ plotES <- function(TFEAresults, TF, outfolder=".",
                sides = "b", position = "jitter") +
       xlab(xlab) + ylab(ylab) + theme_classic() +
       geom_hline(yintercept = 0) + ggtitle(i)
+    p
   }
   if(missing(TF)){
     if(!is.na(outfolder)&&!is.null(outfolder)){
@@ -70,7 +75,8 @@ plotES <- function(TFEAresults, TF, outfolder=".",
       if(length(TF)==1){
         i <- TF
         if(i %in% colnames(ES)){
-          ESplot(ES, i, xlab, ylab, resolution)
+          p <- ESplot(ES, i, xlab, ylab, resolution)
+          p
         }else{
           warning(i, "is not a valid TF name.")
         }

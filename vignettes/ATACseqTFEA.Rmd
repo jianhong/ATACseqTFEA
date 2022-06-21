@@ -8,8 +8,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output:
-  html_document:
-    theme: simplex
+  BiocStyle::html_document:
     toc: true
     toc_float: true
     toc_depth: 4
@@ -76,13 +75,14 @@ from online resources in the _GenomicFeatures_ package.
 
 ```{r, eval=FALSE}
 library(BiocManager)
-BiocManager::install(c("ATACseqTFEA", 
+BiocManager::install(c("ATACseqTFEA",
+                       "ATACseqQC",
                        "Rsamtools",
                        "BSgenome.Drerio.UCSC.danRer10",
                        "TxDb.Drerio.UCSC.danRer10.refGene"))
 ```
 
-## load library
+## Load library
 
 ```{r}
 library(ATACseqTFEA)
@@ -90,7 +90,7 @@ library(BSgenome.Drerio.UCSC.danRer10) ## for binding sites search
 library(ATACseqQC) ## for footprint
 ```
 
-## prepare binding sites
+## Prepare binding sites
 
 To do TFEA, there are two inputs, the binding sites, and the change ranks.
 To get the binding sites, the _ATACseqTFEA_ package provides the 
@@ -109,12 +109,20 @@ motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
                                package="ATACseqTFEA"))
 ```
 
-Another full list of non-redundant TF motifs are also available by downloading
+The `best_curated_Human` is a list of TF motifs
+downloaded from [TFEA github](https://github.com/Dowell-Lab/TFEA)[@rubin2020transcription].
+There are 1279 human motifs in the data set.
+
+```{r}
+motifs_human <- readRDS(system.file("extdata", "best_curated_Human.rds",
+                                    package="ATACseqTFEA"))
+```
+
+Another list of non-redundant TF motifs are also available by downloading
 the data from [DeepSTARR](https://github.com/bernardo-de-almeida/motif-clustering)[@de2021deepstarr]. There are 6502 motifs in the data set.
 ```{r}
-fullListMotifs <- readRDS(system.file("extdata", "cluster_PWMs.rds",
+MotifsSTARR <- readRDS(system.file("extdata", "cluster_PWMs.rds",
                                       package="ATACseqTFEA"))
-fullListMotifs
 ```
 
 To scan the binding sites along a genome, a `BSgenome` object is required by
@@ -132,13 +140,17 @@ bindingSites <-
 ```
 
 
-## do TFEA
+## TFEA
 
-The shifted bam files by ATACseqQC::shiftGAlignmentsList[@ou2018atacseqqc] 
-(for paired-end) or  shiftGAlignments (for single-end) of the
-experiment and control group are required for the changing ranks, 
-which is required by TFEA. The samples must be at
-least biologically duplicated.
+The correct insertion site is the key to the enrichment analysis of TF binding
+sites. The parameter `positive` and `negative` in the function of `TFEA`
+are used to shift the 5' ends of the reads to the correct insertion positions.
+However, this shift does not consider the soft clip of the reads.
+The best way to generate correct shifted bam files is using
+ATACseqQC::shiftGAlignmentsList[@ou2018atacseqqc] for paired-end or 
+shiftGAlignments for single-end of the bam file.
+The samples must be at least biologically duplicated for the one-step `TFEA`
+function.
 
 ```{r}
 bamExp <- system.file("extdata",
@@ -149,95 +161,133 @@ bamCtl <- system.file("extdata",
                       c("WT.shift.rep1.bam",
                         "WT.shift.rep2.bam"),
                       package="ATACseqTFEA")
-res <- TFEA(bamExp, bamCtl, bindingSites=bindingSites)
+res <- TFEA(bamExp, bamCtl, bindingSites=bindingSites,
+            positive=0, negative=0) # the bam files were shifted reads
 ```
 
-## view results
+## View results
 
+The results will be saved in a `TFEAresults` object. We will use multiple
+functions to present the results.
+The `plotES` function will return a `ggplot` object for single TF input and
+no `outfolder` is defined.
+The `ESvolcanoplot` function will provide an overview of all the TFs enrichment.
+And we can borrow the `factorFootprints` function from `ATACseqQC` package
+to view the footprints of one TF.
 
 ```{r}
-## volcanoplot
-ESvolcanoplot(TFEAresults=res)
-### plot enrichment score for one TF
 TF <- "Tal1::Gata1"
-print(plotES(res, TF=TF, outfolder=NA))
+## volcanoplot
+ESvolcanoplot(TFEAresults=res, TFnameToShow=TF)
+### plot enrichment score for one TF
+plotES(res, TF=TF, outfolder=NA)
 ## footprint
-bs <- getBindingSites(res)
-bs <- bs[vapply(bs$motif, 
-                FUN=function(.ele) TF %in% .ele,
-                FUN.VALUE = logical(1L))]
-bs$score <- mapply(bs$score, bs$motif, FUN = function(score, motif){
-  max(score[motif==TF])
-})
 sigs <- factorFootprints(c(bamCtl, bamExp), 
                          pfm = as.matrix(motifs[[TF]]),
-                         bindingSites = bs,
+                         bindingSites = getBindingSites(res, TF=TF),
                          seqlev = seqlev, genome = Drerio,
                          upstream = 100, downstream = 100,
                          group = rep(c("WT", "KD"), each=2))
 ## export the results into a csv file
-#write.csv(res$resultsTable, "enrichment.csv", 
-#          row.names=FALSE)
+write.csv(res$resultsTable, tempfile(fileext = ".csv"), 
+          row.names=FALSE)
+```
 
+The command-line scripts are available at `extdata` named as `sample_scripts.R`. 
+
+# Do TFEA step by step.
+
+The one-step `TFEA` is a function containing multiple steps, which include:
+
+1. count the reads in binding sites, proximal region, and distal region;
+2. filter the binding site not open;
+3. normalize the count number by the width of the count region;
+4. calculate the binding scores and weight the binding scores by open scores;
+5. differential analysis by limma for the binding score
+6. filter the differential results by P-value and fold change
+7. TF enrichment analysis
+
+If you want to tune the parameters, it will be much better to do it step by step
+to avoid repeating the computation for the same step.
+Here are the details for each step.
+
+## Counting reads
+
+We will count the insertion site in binding sites, proximal and distal regions
+by counting the 5' ends of the reads in a shifted bam file.
+Here we suggest keeping the `proximal` and `distal` the same value.
+
+```{r}
+# prepare the counting region
+exbs <- expandBindingSites(bindingSites=bindingSites,
+                           proximal=40,
+                           distal=40,
+                           gap=10)
+## count reads by 5'ends
+counts <- count5ends(bam=c(bamExp, bamCtl),
+                     positive=0L, negative=0L,
+                     bindingSites = bindingSites,
+                     bindingSitesWithGap=exbs$bindingSitesWithGap,
+                     bindingSitesWithProximal=exbs$bindingSitesWithProximal,
+                     bindingSitesWithProximalAndGap=
+                         exbs$bindingSitesWithProximalAndGap,
+                     bindingSitesWithDistal=exbs$bindingSitesWithDistal)
+```
+
+## Filter the counts
+
+We filter the binding sites by at least there is 1 reads in proximal region.
+Users may want to try filter the sites by more stringent criteria such as
+"proximalRegion>1".
+
+```{r}
+colnames(counts)
+counts <- eventsFilter(counts, "proximalRegion>0")
+```
+
+## Normalize the counts by width of count region
+
+We will normalize the counts to count per base (CPB).
+
+```{r}
+counts <- countsNormalization(counts, proximal=40, distal=40)
+```
+
+## Get weighted binding scores
+
+Here we use the open score to weight the binding score. Users can also define
+the weight for binding score via parameter `weight` in
+the function `getWeightedBindingScore`.
+
+```{r}
+counts <- getWeightedBindingScore(counts)
 ```
 
 
-# Real data
+## Differential analysis
 
-```{r eval=FALSE}
-## load library
-library(ATACseqTFEA)
-library(rtracklayer)
-motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
-                               package="ATACseqTFEA"))
-library(BSgenome.Drerio.UCSC.danRer10)
-library(TxDb.Drerio.UCSC.danRer10.refGene)
-genes <- genes(TxDb.Drerio.UCSC.danRer10.refGene)
-## only search the ranges for peaks.
-seqlev <- paste0("chr", 1:25)
-peaks <- lapply(peak_files, import, format="narrowPeak")
-peaks <- reduce(unlist(GRangesList(peaks)))
-mts <- prepareBindingSites(fullListMotifs, Drerio, seqlev, 
-                           grange=peaks, 
-                           p.cutoff = 1e-05)
-bamExp <- dir("bam", pattern = "treatment_group_key_words",
-              full.names = TRUE)
-bamCtl <- dir("bam", pattern = "control_group_key_words",
-              full.names = TRUE)
-res <- TFEA(bamExp, bamCtl, bindingSites=mts)
-## get all the enrichment score plots
-dir.create("ESplots")
-g <- plotES(res, outfolder="ESplots")
-## volcanoplot
-pdf("volcanoplot.pdf")
-ESvolcanoplot(TFEAresults=res)
-dev.off()
-## plot the footprint
-library(ATACseqQC)
-outfolder <- "footprint"
-dir.create(outfolder)
-for(TF in res$resultsTable$TF[res$resultsTable$adjPval<0.05]){
-  bs <- getBindingSites(res)
-  bs <- bs[vapply(bs$motif, 
-                FUN=function(.ele) TF %in% .ele,
-                FUN.VALUE = logical(1L))]
-  bs$score <- mapply(bs$score, bs$motif, FUN = function(score, motif){
-    max(score[motif==TF])
-  })
-  pdf(file.path(outfolder, paste(TF, ".pdf")))
-  factorFootprints(c(bamCtl, bamExp), 
-                   pfm = as.matrix(motifs[[TF]]),
-                   bindingSites = bs,
-                   seqlev = seqlev, genome = Drerio,
-                   upstream = 100, downstream = 100,
-                   group = rep(c("WT", "KD"),
-                               c(length(bamCtl), length(bamExp))))
-  dev.off()
-}
+Here we use `DBscore`, which borrows the power of the `limma` package,
+to do differential binding analysis.
 
-## export the results into a csv file
-write.csv(res$resultsTable, "enrichment.csv", 
-          row.names=FALSE)
+```{r}
+design <- cbind(CTL=1, EXPvsCTL=c(1, 1, 0, 0))
+counts <- DBscore(counts, design=design, coef="EXPvsCTL")
+```
+
+## Filter the DB results
+
+We can filter the binding results to decrease the data size by
+the function `eventsFilter`.
+For the sample data, we skip this step.
+
+## TF enrichment analysis
+
+Last, we use the function `doTFEA` to get the enrichment scores.
+
+```{r}
+res <- doTFEA(counts)
+res
+plotES(res, TF=TF, outfolder=NA) ## will show same figure as above one
 ```
 
 # SessionInfo

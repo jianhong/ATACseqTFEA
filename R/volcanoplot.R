@@ -16,12 +16,12 @@
 #' res <- readRDS(res)
 #' ESvolcanoplot(TFEAresults=res)
 ESvolcanoplot <- function(TFEAresults,
-                        xlab="Enrichment Score",
-                        ylab="-log10(p value)",
-                        TFnameToShow = 20,
-                        significantCutoff = 0.05,
-                        col = c("red", "blue", "gray"),
-                        ...){
+                          xlab="Enrichment Score",
+                          ylab="-log10(p value)",
+                          TFnameToShow = 20,
+                          significantCutoff = 0.05,
+                          col = c("red", "blue", "gray"),
+                          ...){
   stopifnot("TFEAresults must be output of TFEA function"=
               is(TFEAresults, "TFEAresults"))
   res <- as(TFEAresults, "data.frame")

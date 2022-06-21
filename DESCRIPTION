@@ -1,29 +1,31 @@
 Package: ATACseqTFEA
 Type: Package
 Title: Transcription Factor Enrichment Analysis for ATAC-seq
-Version: 0.99.4
+Version: 0.99.5
 Authors@R: person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
     role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488"))
 Description: Assay for Transpose-Accessible Chromatin using sequencing
     (ATAC-seq) is a technique to assess genome-wide chromatin accessibility
     by probing open chromatin with hyperactive mutant Tn5 Transposase that
     inserts sequencing adapters into open regions of the genome.
-    ATACseqTFEA is a improvement of current computational method that detects
-    differential activity of transcription factors (TFs).
-    ATACseqTFEA not only use the difference of open region information,
-    but also (or emphasize) the difference of TFs
+    ATACseqTFEA is an improvement of the current computational method that
+    detects differential activity of transcription factors (TFs).
+    ATACseqTFEA not only uses the difference of open region information,
+    but also (or emphasizes) the difference of TFs
     footprints (cutting sites or insertion sites).
     ATACseqTFEA provides an easy, rigorous way to broadly assess TF
     activity changes between two conditions.
+BugReports: https://github.com/jianhong/ATACseqTFEA/issues
+URL: https://github.com/jianhong/ATACseqTFEA
 Depends: R (>= 4.2)
 Imports: BiocGenerics, S4Vectors, IRanges, Matrix, GenomicRanges,
-    GenomicAlignments, GenomeInfoDb,
+    GenomicAlignments, GenomeInfoDb, SummarizedExperiment,
     Rsamtools, motifmatchr, TFBSTools,
     stats, pracma, grDevices, 
     ggplot2, ggrepel, dplyr, limma, methods
 Suggests: BSgenome.Drerio.UCSC.danRer10, knitr, testthat, ATACseqQC
 biocViews: Sequencing, DNASeq, ATACSeq, MNaseSeq, GeneRegulation
-License: GPL(>= 2)
+License: GPL-3
 Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 7.2.0

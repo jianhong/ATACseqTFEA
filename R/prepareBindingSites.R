@@ -40,8 +40,12 @@
 #' mts <- prepareBindingSites(motifs, Drerio, seqlev,
 #'                            grange=GRanges("chr1",
 #'                                           IRanges(5000, 100000)))
-prepareBindingSites <- function(pwms, genome, seqlev=seqlevels(genome),
-                                p.cutoff = 1e-05, w = 7, grange,
+prepareBindingSites <- function(pwms,
+                                genome,
+                                seqlev=seqlevels(genome),
+                                p.cutoff = 1e-05,
+                                w = 7,
+                                grange,
                                 maximalBindingWidth = 40L,
                                 mergeBindingSitesByPercentage = 0.8,
                                 ignore.strand = TRUE){
@@ -171,7 +175,10 @@ reduceByPercentage <- function(query, percentage, ignore.strand=TRUE,
   query_new <- query
   mcols(query_new) <- NULL
   query_new$qid <- seq_along(query)
-  while(TRUE){
+  MAX_LOOPS <- options("expressions")
+  loop_count <- 1
+  while(loop_count<=MAX_LOOPS){
+    loop_count <- loop_count + 1
     len1 <- length(query_new)
     ol <- findOverlaps1(query_new,
                         percentage = percentage,
@@ -210,6 +217,10 @@ reduceByPercentage <- function(query, percentage, ignore.strand=TRUE,
   }
   stopifnot('The reduce of binding sites does not work correctly.'=
               all(seq_along(query) %in% unlist(query_new$qid)))
+  if(loop_count>MAX_LOOPS){
+    warning("The maximal loop count is reached. ",
+            "The binding site may be not fully reduced.")
+  }
   query_new <- sort(query_new)
   ## reduce binding range
   q2 <- lapply(query_new$qid, function(.ele){
