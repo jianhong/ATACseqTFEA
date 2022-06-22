@@ -6,24 +6,26 @@
 #' @param xlab,ylab character string giving label for x-axis/y-axis.
 #' @param resolution integer(1). The number of bars plotted in the bottom of
 #' figure to show the density of occurrence of events.
-#' @param ... parameter passed to pdf.
+#' @param device Device to use. Can be one of "eps", "ps", "tex" (pictex),
+#'  "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only).
+#' @param ... parameter passed to ggsave.
 #' @return NULL if outfolder is set or ggplot object.
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_rug xlab ylab
-#' theme_classic geom_hline ggtitle
+#' theme_classic geom_hline ggtitle ggsave
 #' @importFrom dplyr sample_n
-#' @importFrom grDevices dev.off pdf
 #' @export
 #' @examples
 #' res <- system.file("extdata", "res.rds", package="ATACseqTFEA")
 #' res <- readRDS(res)
 #' g <- plotES(res, TF="KLF9", outfolder=NA)
-#' print(g)
+#' g
 plotES <- function(TFEAresults,
                    TF,
                    outfolder=".",
                    xlab="rank",
                    ylab="Enrichment",
                    resolution=500L,
+                   device='pdf',
                    ...){
   stopifnot("TFEAresults must be output of TFEA function"=
               is(TFEAresults, "TFEAresults"))
@@ -50,9 +52,8 @@ plotES <- function(TFEAresults,
         dir.create(outfolder)
       }
       null <- lapply(colnames(ES), function(i){
-        pdf(file.path(outfolder, paste0(make.names(i), ".pdf")), ...)
-        print(ESplot(ES, i, xlab, ylab, resolution))
-        dev.off()
+        ggsave(filename=file.path(outfolder, paste0(make.names(i), ".", device)),
+               plot = ESplot(ES, i, xlab, ylab, resolution), ...)
       })
     }else{
       stop("outfolder can not be NA if TF is not set.")
@@ -64,9 +65,8 @@ plotES <- function(TFEAresults,
       }
       null <- lapply(TF, function(i){
         if(i %in% colnames(ES)){
-          pdf(file.path(outfolder, paste0(make.names(i), ".pdf")), ...)
-          print(ESplot(ES, i, xlab, ylab, resolution))
-          dev.off()
+          ggsave(filename=file.path(outfolder, paste0(make.names(i), ".", device)),
+                 plot = ESplot(ES, i, xlab, ylab, resolution), ...)
         }else{
           warning(i, "is not a valid TF name.")
         }

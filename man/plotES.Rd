@@ -11,6 +11,7 @@ plotES(
   xlab = "rank",
   ylab = "Enrichment",
   resolution = 500L,
+  device = "pdf",
   ...
 )
 }
@@ -26,7 +27,10 @@ plotES(
 \item{resolution}{integer(1). The number of bars plotted in the bottom of
 figure to show the density of occurrence of events.}
 
-\item{...}{parameter passed to pdf.}
+\item{device}{Device to use. Can be one of "eps", "ps", "tex" (pictex),
+"pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only).}
+
+\item{...}{parameter passed to ggsave.}
 }
 \value{
 NULL if outfolder is set or ggplot object.
@@ -38,5 +42,5 @@ Plot GSEA style enrichment score curve.
 res <- system.file("extdata", "res.rds", package="ATACseqTFEA")
 res <- readRDS(res)
 g <- plotES(res, TF="KLF9", outfolder=NA)
-print(g)
+g
 }

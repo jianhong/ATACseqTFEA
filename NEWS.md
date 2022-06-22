@@ -1,3 +1,6 @@
+# Change in 0.99.8
+  - Use ggsave to replace print for plotES.
+  
 # Change in 0.99.7
   - add return descriptions for TFEAresults-methods.
   
