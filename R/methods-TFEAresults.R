@@ -71,6 +71,8 @@ setReplaceMethod("[[", "TFEAresults",
 
 #' @rdname TFEAresults-methods
 #' @export
+#' @return The `getEnrichmentScore` method will return the
+#'  enrichment score matrix.
 #' @aliases getEnrichmentScore,TFEAresults-method
 #' @examples
 #' head(getEnrichmentScore(res))
@@ -79,6 +81,8 @@ setMethod("getEnrichmentScore", "TFEAresults", function(x)
 
 #' @rdname TFEAresults-methods
 #' @export
+#' @return The `getBindingSites` method will return a GRanges object indicates
+#'  binding sites.
 #' @importFrom S4Vectors isSingleString
 #' @aliases getBindingSites,TFEAresults-method
 setMethod("getBindingSites", "TFEAresults", function(x, TF){
@@ -99,6 +103,8 @@ setMethod("getBindingSites", "TFEAresults", function(x, TF){
 
 #' @rdname TFEAresults-methods
 #' @export
+#' @return The method `getMotifID` will return A list of positions of
+#' the binding sites for the motifs.
 #' @aliases getMotifID,TFEAresults-method
 setMethod("getMotifID", "TFEAresults", function(x) slot(x, "motifID"))
 

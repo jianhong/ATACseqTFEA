@@ -56,6 +56,16 @@ getMotifID(x)
 
 \item{exact}{see \link[base]{Extract}}
 }
+\value{
+The `getEnrichmentScore` method will return the
+ enrichment score matrix.
+
+The `getBindingSites` method will return a GRanges object indicates
+ binding sites.
+
+The method `getMotifID` will return A list of positions of
+the binding sites for the motifs.
+}
 \description{
 The assessment and replacement methods for
 \link{TFEAresults-class}

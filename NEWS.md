@@ -1,3 +1,6 @@
+# Change in 0.99.7
+  - add return descriptions for TFEAresults-methods.
+  
 # Change in 0.99.6
   - add BiocStyle and rmarkdown into Suggests
   
