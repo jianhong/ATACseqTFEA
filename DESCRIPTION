@@ -17,7 +17,7 @@ Description: Assay for Transpose-Accessible Chromatin using sequencing
     activity changes between two conditions.
 BugReports: https://github.com/jianhong/ATACseqTFEA/issues
 URL: https://github.com/jianhong/ATACseqTFEA
-Depends: R (>= 4.2)
+Depends: R
 Imports: BiocGenerics, S4Vectors, IRanges, Matrix, GenomicRanges,
     GenomicAlignments, GenomeInfoDb, SummarizedExperiment,
     Rsamtools, motifmatchr, TFBSTools,
