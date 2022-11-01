@@ -1,7 +1,7 @@
 Package: ATACseqTFEA
 Type: Package
 Title: Transcription Factor Enrichment Analysis for ATAC-seq
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
     role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488"))
 Description: Assay for Transpose-Accessible Chromatin using sequencing
