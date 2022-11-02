@@ -1,3 +1,9 @@
+# Change in 1.1.1
+  - fix the bugs in sample_scripts.R.
+  
+# Change in 0.99.9
+  - Change filename privateUtility to internal-utils.
+
 # Change in 0.99.8
   - Use ggsave to replace print for plotES.
   

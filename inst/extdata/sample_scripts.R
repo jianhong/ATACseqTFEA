@@ -9,21 +9,21 @@ option_list <- list(
               dest="verbose", help="Print little output"),
   make_option(c("-m", "--motifpath"), type="character", default='PWMatrixList.rds',
               help="The file path 'PWMatrixList' or 'PFMatrixList' saved in R object (read by function readRDS) [default %default]. The seaching path including the extdata of ATACseqTFEA package"),
-  make_option("-g", "--bsgenome", type="character", default="BSgenome.Hsapiens.UCSC.hg38",
+  make_option(c("-g", "--bsgenome"), type="character", default="BSgenome.Hsapiens.UCSC.hg38",
               help = "BSgenome package name [default \"%default\"]"),
-  make_option("-t", "--txdb", type="character", default="TxDb.Hsapiens.UCSC.hg38.knownGene",
+  make_option(c("-t", "--txdb"), type="character", default="TxDb.Hsapiens.UCSC.hg38.knownGene",
               help="TxDb package name [default %default]"),
-  make_option("-s", "--seqlevels", type="character", default='paste0("chr", 1:25)',
+  make_option(c("-s", "--seqlevels"), type="character", default='paste0("chr", 1:25)',
               help="seqlevels for binding sites [default %default]"),
-  make_option("-p", "--peakfiles", type="character",
+  make_option(c("-p", "--peakfiles"), type="character",
               help="Peak files for ATAC-seq (required)."),
-  make_option("-f", "--format", type="character", default='narrowPeak',
+  make_option(c("-f", "--format"), type="character", default='narrowPeak',
               help="Format of ATAC-seq peak files [default %default]"),
-  make_option("-e", "--experiment", type="character",
+  make_option(c("-e", "--experiment"), type="character",
               help="Bam file of experiments/treatments"),
-  make_option("-c", "--control", type="character",
+  make_option(c("-c", "--control"), type="character",
               help="Bam file of controls"),
-  make_option("-o", "--outfolder", type="character", default=".",
+  make_option(c("-o", "--outfolder"), type="character", default=".",
               help="Output folder [default %default]")
 )
 
@@ -39,8 +39,8 @@ console_log <- function(...){
   }
 }
 
-bamExp <- opt$experiment
-bamCtl <- opt$control
+bamExp <- eval(parse(text=opt$experiment))
+bamCtl <- eval(parse(text=opt$control))
 
 for(x in c(bamExp, bamCtl)){
   if(!file.exists(x)){
@@ -60,7 +60,7 @@ suppressPackageStartupMessages(library(ATACseqQC))
 if(!require(package=opt$bsgenome, character.only = TRUE)){
   stop("can not load bsgenome.")
 }
-if(!requie(package=opt$txdb, character.only = TRUE)){
+if(!require(package=opt$txdb, character.only = TRUE)){
   stop("can not load txdb.")
 }
 
@@ -73,7 +73,7 @@ txdb <- get(opt$txdb)
 genes <- genes(txdb)
 
 ## only search the ranges for peaks.
-seqlev <- eval(opt$seqlevels)
+seqlev <- eval(parse(text=opt$seqlevels))
 peaks <- lapply(opt$peakfiles, import, format=opt$format)
 peaks <- reduce(unlist(GRangesList(peaks)))
 console_log("prepare binding sites.")
@@ -84,19 +84,22 @@ console_log("doing TFEA")
 res <- TFEA(bamExp, bamCtl, positive=0, negative=0, bindingSites=mts,
             filter="proximalRegion>1")
 
+dir.create(opts$outfolder, recursive=TRUE)
+console_log("save the results as a csv file")
+## export the results into a csv file
+write.csv(res$resultsTable, file.path(opts$outfolder, "enrichment.csv"),
+          row.names=FALSE)
+## export the results into a rds file
+saveRDS(res, file.path(opts$outfolder, "res.rds"))
+
 console_log("plot Enrichment scores")
 ## get all the enrichment score plots
-dir.create(file.path(opts$outfolder, "ESplots"))
+dir.create(file.path(opts$outfolder, "ESplots"), recursive=TRUE)
 g <- plotES(res, outfolder=file.path(opts$outfolder, "ESplots"))
 ## volcanoplot
 pdf(file.path(opts$outfolder, "volcanoplot.pdf"))
 ESvolcanoplot(TFEAresults=res)
 dev.off()
-
-console_log("save the results as a csv file")
-## export the results into a csv file
-write.csv(res$resultsTable, file.path(opts$outfolder, "enrichment.csv"),
-          row.names=FALSE)
 
 console_log("plot footprints")
 ## plot the footprint
