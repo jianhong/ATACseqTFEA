@@ -1,3 +1,6 @@
+# Change in 1.0.1
+  - Fix the bugs in sample_scripts.R.
+
 # Change in 0.99.9
   - Change filename privateUtility to internal-utils.
 
