@@ -84,26 +84,26 @@ console_log("doing TFEA")
 res <- TFEA(bamExp, bamCtl, positive=0, negative=0, bindingSites=mts,
             filter="proximalRegion>1")
 
-dir.create(opts$outfolder, recursive=TRUE)
+dir.create(opt$outfolder, recursive=TRUE)
 console_log("save the results as a csv file")
 ## export the results into a csv file
-write.csv(res$resultsTable, file.path(opts$outfolder, "enrichment.csv"),
+write.csv(res$resultsTable, file.path(opt$outfolder, "enrichment.csv"),
           row.names=FALSE)
 ## export the results into a rds file
-saveRDS(res, file.path(opts$outfolder, "res.rds"))
+saveRDS(res, file.path(opt$outfolder, "res.rds"))
 
 console_log("plot Enrichment scores")
 ## get all the enrichment score plots
-dir.create(file.path(opts$outfolder, "ESplots"), recursive=TRUE)
-g <- plotES(res, outfolder=file.path(opts$outfolder, "ESplots"))
+dir.create(file.path(opt$outfolder, "ESplots"), recursive=TRUE)
+g <- plotES(res, outfolder=file.path(opt$outfolder, "ESplots"))
 ## volcanoplot
-pdf(file.path(opts$outfolder, "volcanoplot.pdf"))
+pdf(file.path(opt$outfolder, "volcanoplot.pdf"))
 ESvolcanoplot(TFEAresults=res)
 dev.off()
 
 console_log("plot footprints")
 ## plot the footprint
-outfolder <- file.path(opts$outfolder, "footprint")
+outfolder <- file.path(opt$outfolder, "footprint")
 dir.create(outfolder)
 for(TF in res$resultsTable$TF[res$resultsTable$adjPval<0.05]){
   bs <- getBindingSites(res)
