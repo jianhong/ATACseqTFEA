@@ -3,7 +3,7 @@
 # report issue at https://github.com/jianhong/ATACseqTFEA/issue
 suppressPackageStartupMessages(library(optparse))
 option_list <- list(
-  make_option(c("-v", "--verbose"), action="store_true", default=TRUE,
+  make_option(c("-v", "--verbose"), action="store_true", default=FALSE,
               help="Print extra output [default]"),
   make_option(c("-q", "--quietly"), action="store_false",
               dest="verbose", help="Print little output"),
@@ -35,7 +35,7 @@ if(is.null(opt$peakfiles)){
 
 console_log <- function(...){
   if ( opt$verbose ) {
-    message(...)
+    message(Sys.time(), "\t", ...)
   }
 }
 
@@ -117,7 +117,7 @@ for(TF in res$resultsTable$TF[res$resultsTable$adjPval<0.05]){
   factorFootprints(c(bamCtl, bamExp),
                    pfm = as.matrix(motifs[[TF]]),
                    bindingSites = bs,
-                   seqlev = seqlev, genome = Drerio,
+                   seqlev = seqlev, genome = genome,
                    upstream = 100, downstream = 100,
                    group = rep(c("WT", "KD"),
                                c(length(bamCtl), length(bamExp))))
