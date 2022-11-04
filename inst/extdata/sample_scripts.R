@@ -117,7 +117,7 @@ for(TF in res$resultsTable$TF[res$resultsTable$adjPval<0.05]){
   factorFootprints(c(bamCtl, bamExp),
                    pfm = as.matrix(motifs[[TF]]),
                    bindingSites = bs,
-                   seqlev = seqlev, genome = Drerio,
+                   seqlev = seqlev, genome = genome,
                    upstream = 100, downstream = 100,
                    group = rep(c("WT", "KD"),
                                c(length(bamCtl), length(bamExp))))
