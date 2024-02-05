@@ -1,3 +1,6 @@
+# Change in 1.5.1
+  - add function importFimoBindingSites.
+  
 # Change in 1.1.1
   - fix the bugs in sample_scripts.R.
   
