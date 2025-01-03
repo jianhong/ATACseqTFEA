@@ -1,3 +1,6 @@
+# Change in 1.9.1
+  - update email address.
+  
 # Change in 1.5.1
   - add function importFimoBindingSites.
   
