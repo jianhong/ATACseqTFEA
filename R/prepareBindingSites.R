@@ -20,7 +20,7 @@
 #' the calculations.
 #' @return A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} with
 #' all the positions of matches.
-#' @importFrom GenomeInfoDb seqinfo seqlevels `seqlevels<-` Seqinfo seqlengths
+#' @importFrom Seqinfo seqinfo seqlevels `seqlevels<-` Seqinfo seqlengths
 #' seqnames seqinfo<-
 #' @importFrom motifmatchr matchMotifs
 #' @importFrom IRanges IRanges reduce findOverlaps pintersect countOverlaps
