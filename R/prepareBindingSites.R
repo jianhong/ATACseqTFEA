@@ -20,11 +20,9 @@
 #' the calculations.
 #' @return A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} with
 #' all the positions of matches.
-#' @importFrom Seqinfo seqinfo seqlevels `seqlevels<-` Seqinfo seqlengths
-#' seqnames seqinfo<-
+#' @importFrom Seqinfo seqinfo seqlevels `seqlevels<-` Seqinfo seqlengths seqnames seqinfo<-
 #' @importFrom motifmatchr matchMotifs
-#' @importFrom IRanges IRanges reduce findOverlaps pintersect countOverlaps
-#' distance promoters
+#' @importFrom IRanges IRanges reduce findOverlaps pintersect countOverlaps distance promoters
 #' @importFrom S4Vectors queryHits subjectHits split mcols mcols<-
 #' @importFrom BiocGenerics `%in%`
 #' @importFrom TFBSTools ID PFMatrixList PWMatrixList

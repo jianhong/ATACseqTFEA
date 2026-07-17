@@ -21,8 +21,8 @@
 #'  proximal and gaps in both ends,
 #' @param bindingSitesWithDistal bindingSites with gap, proximal, gap and
 #' distal regions.
-#' @importFrom GenomicAlignments readGAlignments summarizeOverlaps
-#' cigar cigarNarrow cigarQNarrow qwidth
+#' @importFrom GenomicAlignments readGAlignments summarizeOverlaps cigar qwidth
+#' @importFrom cigarillo narrow_cigars_along_ref narrow_cigars_along_query
 #' @importFrom Rsamtools ScanBamParam BamFile asMates
 #' @importFrom BiocGenerics start end width start<- end<- strand
 #' @importFrom SummarizedExperiment SummarizedExperiment assays
@@ -112,8 +112,8 @@ count5ends <- function(bam, index=bam,
       strands <- as.character(strand(chunk0)) == "-"
       ns <- ifelse(strands, negative, positive)
       cigars <- cigar(chunk0)
-      cigars <- as.character(cigarNarrow(cigars))
-      cigars <- cigarQNarrow(cigars,
+      cigars <- as.character(narrow_cigars_along_ref(cigars))
+      cigars <- narrow_cigars_along_query(cigars,
                              start=ifelse(strands, 1, positive+1),
                              end=ifelse(strands, -negative-1, -1))
       chunk0@start <- start(chunk0) + attributes(cigars)$rshift

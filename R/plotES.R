@@ -10,8 +10,7 @@
 #'  "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only).
 #' @param ... parameter passed to ggsave.
 #' @return NULL if outfolder is set or ggplot object.
-#' @importFrom ggplot2 ggplot aes_string geom_line geom_rug xlab ylab
-#' theme_classic geom_hline ggtitle ggsave
+#' @importFrom ggplot2 ggplot aes_string geom_line geom_rug xlab ylab theme_classic geom_hline ggtitle ggsave
 #' @importFrom dplyr sample_n
 #' @export
 #' @examples

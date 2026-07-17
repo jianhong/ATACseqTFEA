@@ -7,8 +7,7 @@
 #' @param col Color sets for the points.
 #' @param ... parameter passed to pdf.
 #' @return ggplot object.
-#' @importFrom ggplot2 ggplot aes_string theme_bw labs geom_point
-#' scale_color_manual unit
+#' @importFrom ggplot2 ggplot aes_string theme_bw labs geom_point scale_color_manual unit
 #' @importFrom ggrepel geom_text_repel
 #' @export
 #' @examples

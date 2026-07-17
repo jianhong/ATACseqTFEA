@@ -1,3 +1,6 @@
+# Change in 1.15.1
+  - import cigarillo package.
+  
 # Change in 1.9.1
   - update email address.
   

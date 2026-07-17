@@ -11,11 +11,9 @@
 #' @param ... Parameter to be passed to \link[rtracklayer:GFFFile-class]{import.gff}
 #' @return A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges}} with
 #' all the positions of matches.
-#' @importFrom Seqinfo seqinfo seqlevels `seqlevels<-` Seqinfo seqlengths
-#' seqnames seqinfo<-
+#' @importFrom Seqinfo seqinfo seqlevels `seqlevels<-` Seqinfo seqlengths seqnames seqinfo<-
 #' @importFrom rtracklayer import
-#' @importFrom IRanges IRanges reduce findOverlaps pintersect countOverlaps
-#' distance promoters
+#' @importFrom IRanges IRanges reduce findOverlaps pintersect countOverlaps distance promoters
 #' @importFrom S4Vectors queryHits subjectHits split mcols mcols<-
 #' @importFrom BiocGenerics `%in%`
 #' @importFrom GenomicRanges GRangesList GRanges

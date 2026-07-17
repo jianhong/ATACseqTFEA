@@ -15,8 +15,7 @@
 #' @return A RangedSummarizedExperiment object with assays of
 #' count matrix with bindingSites, proximalRegion and distalRegion as
 #' column names and bindingSites GRanges object as rowRanges.
-#' @importFrom SummarizedExperiment SummarizedExperiment rowRanges
-#' rowData assays<-
+#' @importFrom SummarizedExperiment SummarizedExperiment rowRanges rowData assays<-
 #' @export
 #' @author Jianhong Ou
 #' @examples
