@@ -1,3 +1,6 @@
+# Change in 1.15.2
+  - update the documentation.
+
 # Change in 1.15.1
   - import cigarillo package.
   

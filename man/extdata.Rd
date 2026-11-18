@@ -5,7 +5,11 @@
 \alias{extdata}
 \alias{cluster_PWMs}
 \alias{PWMatrixList}
+\alias{best_curated_Human}
 \title{Data in extdata}
+\format{
+PWMatrixList object saved in RDS format.
+}
 \description{
 The list of data saved in extdata folder.
 }
@@ -16,11 +20,11 @@ than 1e-9 calculated by MotIV::motifDistances function (v 1.42.0).
 The merged motifs were exported by motifStack (v 1.30.0).
 
 The `cluster_PWMs` is a list of non-redundant TF motifs downloaded from
-[DeepSTARR](https://github.com/bernardo-de-almeida/motif-clustering).
+DeepSTARR <https://github.com/bernardo-de-almeida/motif-clustering>.
 There are 6502 motifs in the data set.
 
 The `best_curated_Human` is a list of TF motifs downloaded from
-[TFEA github](https://github.com/Dowell-Lab/TFEA).
+TFEA github <https://github.com/Dowell-Lab/TFEA>.
 There are 1279 human motifs in the data set.
 }
 \examples{

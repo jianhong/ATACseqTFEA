@@ -6,6 +6,9 @@
 #' @rdname TFEAresults-methods
 #' @aliases coerce,TFEAresults,data.frame-method
 #' @aliases as,TFEAresults,data.frame-method
+#' @param from,to The classes between which the coerce methods def and replace
+#'  perform coercion.
+#' @param strict the strict argument is irrelevant.
 #' @exportMethod coerce
 #' @examples
 #' res <- readRDS(system.file("extdata", "res.rds", package="ATACseqTFEA"))

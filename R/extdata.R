@@ -2,6 +2,7 @@
 #' @description The list of data saved in extdata folder.
 #' @aliases cluster_PWMs
 #' @aliases PWMatrixList
+#' @aliases best_curated_Human
 #' @name extdata
 #' @rdname extdata
 #' @docType data
@@ -12,12 +13,13 @@
 #' The merged motifs were exported by motifStack (v 1.30.0).
 #'
 #' The `cluster_PWMs` is a list of non-redundant TF motifs downloaded from
-#' [DeepSTARR](https://github.com/bernardo-de-almeida/motif-clustering).
+#' DeepSTARR <https://github.com/bernardo-de-almeida/motif-clustering>.
 #' There are 6502 motifs in the data set.
 #'
 #' The `best_curated_Human` is a list of TF motifs downloaded from
-#' [TFEA github](https://github.com/Dowell-Lab/TFEA).
+#' TFEA github <https://github.com/Dowell-Lab/TFEA>.
 #' There are 1279 human motifs in the data set.
+#' @format PWMatrixList object saved in RDS format.
 #' @examples
 #' motifs <- readRDS(system.file("extdata", "PWMatrixList.rds",
 #'                   package="ATACseqTFEA"))

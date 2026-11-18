@@ -28,97 +28,127 @@ exportMethods(getBindingSites)
 exportMethods(getEnrichmentScore)
 exportMethods(getMotifID)
 exportMethods(show)
-importFrom(BiocGenerics,"end<-")
-importFrom(BiocGenerics,"start<-")
-importFrom(BiocGenerics,`%in%`)
-importFrom(BiocGenerics,end)
-importFrom(BiocGenerics,start)
-importFrom(BiocGenerics,strand)
-importFrom(BiocGenerics,width)
-importFrom(GenomicAlignments,cigar)
-importFrom(GenomicAlignments,qwidth)
-importFrom(GenomicAlignments,readGAlignments)
-importFrom(GenomicAlignments,summarizeOverlaps)
-importFrom(GenomicRanges,GRanges)
-importFrom(GenomicRanges,GRangesList)
-importFrom(IRanges,CharacterList)
-importFrom(IRanges,IRanges)
-importFrom(IRanges,countOverlaps)
-importFrom(IRanges,distance)
-importFrom(IRanges,findOverlaps)
-importFrom(IRanges,pintersect)
-importFrom(IRanges,promoters)
-importFrom(IRanges,reduce)
-importFrom(Matrix,Matrix)
-importFrom(Matrix,rowSums)
-importFrom(Rsamtools,BamFile)
-importFrom(Rsamtools,ScanBamParam)
-importFrom(Rsamtools,asMates)
-importFrom(S4Vectors,"mcols<-")
-importFrom(S4Vectors,SimpleList)
-importFrom(S4Vectors,head)
-importFrom(S4Vectors,isSingleInteger)
-importFrom(S4Vectors,isSingleNumber)
-importFrom(S4Vectors,isSingleString)
-importFrom(S4Vectors,mcols)
-importFrom(S4Vectors,queryHits)
-importFrom(S4Vectors,split)
-importFrom(S4Vectors,subjectHits)
-importFrom(Seqinfo,"seqinfo<-")
-importFrom(Seqinfo,Seqinfo)
-importFrom(Seqinfo,`seqlevels<-`)
-importFrom(Seqinfo,seqinfo)
-importFrom(Seqinfo,seqlengths)
-importFrom(Seqinfo,seqlevels)
-importFrom(Seqinfo,seqnames)
-importFrom(SummarizedExperiment,"assays<-")
-importFrom(SummarizedExperiment,"rowData<-")
-importFrom(SummarizedExperiment,SummarizedExperiment)
-importFrom(SummarizedExperiment,assays)
-importFrom(SummarizedExperiment,rowData)
-importFrom(SummarizedExperiment,rowRanges)
-importFrom(TFBSTools,ID)
-importFrom(TFBSTools,PFMatrixList)
-importFrom(TFBSTools,PWMatrixList)
-importFrom(cigarillo,narrow_cigars_along_query)
-importFrom(cigarillo,narrow_cigars_along_ref)
+importFrom(BiocGenerics,
+  "%in%",
+  "end<-",
+  "start<-",
+  end,
+  start,
+  strand,
+  width
+)
+importFrom(GenomicAlignments,
+  cigar,
+  qwidth,
+  readGAlignments,
+  summarizeOverlaps
+)
+importFrom(GenomicRanges,
+  GRanges,
+  GRangesList
+)
+importFrom(IRanges,
+  CharacterList,
+  IRanges,
+  countOverlaps,
+  distance,
+  findOverlaps,
+  pintersect,
+  promoters,
+  reduce
+)
+importFrom(Matrix,
+  Matrix,
+  rowSums
+)
+importFrom(Rsamtools,
+  BamFile,
+  ScanBamParam,
+  asMates
+)
+importFrom(S4Vectors,
+  "mcols<-",
+  SimpleList,
+  head,
+  isSingleInteger,
+  isSingleNumber,
+  isSingleString,
+  mcols,
+  queryHits,
+  split,
+  subjectHits
+)
+importFrom(Seqinfo,
+  "seqinfo<-",
+  "seqlevels<-",
+  Seqinfo,
+  seqinfo,
+  seqlengths,
+  seqlevels,
+  seqnames
+)
+importFrom(SummarizedExperiment,
+  "assays<-",
+  "rowData<-",
+  SummarizedExperiment,
+  assays,
+  rowData,
+  rowRanges
+)
+importFrom(TFBSTools,
+  ID,
+  PFMatrixList,
+  PWMatrixList
+)
+importFrom(cigarillo,
+  narrow_cigars_along_query,
+  narrow_cigars_along_ref
+)
 importFrom(dplyr,sample_n)
-importFrom(ggplot2,aes_string)
-importFrom(ggplot2,geom_hline)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,geom_rug)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,ggsave)
-importFrom(ggplot2,ggtitle)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,scale_color_manual)
-importFrom(ggplot2,theme_bw)
-importFrom(ggplot2,theme_classic)
-importFrom(ggplot2,unit)
-importFrom(ggplot2,xlab)
-importFrom(ggplot2,ylab)
+importFrom(ggplot2,
+  aes_string,
+  geom_hline,
+  geom_line,
+  geom_point,
+  geom_rug,
+  ggplot,
+  ggsave,
+  ggtitle,
+  labs,
+  scale_color_manual,
+  theme_bw,
+  theme_classic,
+  unit,
+  xlab,
+  ylab
+)
 importFrom(ggrepel,geom_text_repel)
-importFrom(limma,eBayes)
-importFrom(limma,lmFit)
-importFrom(limma,topTable)
-importFrom(methods,"slot<-")
-importFrom(methods,as)
-importFrom(methods,coerce)
-importFrom(methods,is)
-importFrom(methods,new)
-importFrom(methods,prototype)
-importFrom(methods,representation)
-importFrom(methods,setAs)
-importFrom(methods,setClass)
-importFrom(methods,setGeneric)
-importFrom(methods,setMethod)
-importFrom(methods,setReplaceMethod)
-importFrom(methods,show)
-importFrom(methods,slot)
+importFrom(limma,
+  eBayes,
+  lmFit,
+  topTable
+)
+importFrom(methods,
+  "slot<-",
+  as,
+  coerce,
+  is,
+  new,
+  prototype,
+  representation,
+  setAs,
+  setClass,
+  setGeneric,
+  setMethod,
+  setReplaceMethod,
+  show,
+  slot
+)
 importFrom(motifmatchr,matchMotifs)
 importFrom(pracma,erf)
 importFrom(rtracklayer,import)
-importFrom(stats,p.adjust)
-importFrom(stats,pnorm)
-importFrom(stats,sd)
+importFrom(stats,
+  p.adjust,
+  pnorm,
+  sd
+)

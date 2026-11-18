@@ -23,6 +23,8 @@ getBindingSites(x, TF)
 
 getMotifID(x)
 
+\S4method{coerce}{TFEAresults,data.frame}(from, to = "data.frame", strict = TRUE)
+
 \S4method{show}{TFEAresults}(object)
 
 \S4method{$}{TFEAresults}(x, name)
@@ -43,6 +45,11 @@ getMotifID(x)
 \item{x}{TFEAresults object.}
 
 \item{TF}{Transcription factor}
+
+\item{from, to}{The classes between which the coerce methods def and replace
+perform coercion.}
+
+\item{strict}{the strict argument is irrelevant.}
 
 \item{object}{an object of TFEAresults}
 
